@@ -1,0 +1,9 @@
+**/dist/**
+**/config/**
+**/scripts/**
+**/node_modules/**
+**/server.js
+**/webpack.config*.js
+**/flow-typed/**
+src/serviceWorker.js
+**/*.test.js

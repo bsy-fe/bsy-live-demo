@@ -1,0 +1,45 @@
+.loading
+  position absolute
+  top 0
+  right 0
+  left 0
+  bottom 0
+  width 100%
+  height 100%
+  background #fff
+  display flex
+  justify-content center
+  align-items center
+  z-index 999
+  .loading-block
+    text-align center
+  .txt
+    font-size 18px
+  .tips
+    font-size 16px
+.loading4{
+  margin-bottom: 10px;
+  width:150px;
+  text-align: center;
+}
+.loading4 >div{
+  margin: 0 5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  display:inline-block;
+  background-color: #8C8C8C;
+  animation: three 1.4s infinite ease-in-out;
+  animation-fill-mode: both;
+}
+.loading4 .three1{
+  animation-delay: -0.30s;
+}
+.loading4 .three2{
+  animation-delay: -0.15s;
+}
+
+@keyframes three {
+  0%, 80%, 100% {transform: scale(0.0) }
+  40% { transform: scale(1.0) }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title></title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+        #root {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <!-- <script src="http://127.0.0.1:3090/bsylive.min.js"></script> -->
+    <% for (var js in htmlWebpackPlugin.options.files.js) { %>
+        <script src="<%= htmlWebpackPlugin.options.files.js[js] %>"></script>
+    <% } %>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script>
+    <script>
+      let ua = navigator.userAgent
+      console.log(ua.match(/AppleWebKit.*Mobile.*/))
+      if (ua.match(/AppleWebKit.*Mobile.*/)) {
+        var vConsole = new VConsole()
+      }
+
+    </script>
+</head>
+
+<body>
+<div id="root"></div>
+<script>
+  const gqs = (name, search) => {
+    const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
+    const r = (search || window.location.search).substr(1).match(reg)
+    if (r != null) {
+      return decodeURIComponent(r[2])
+    }
+    return null
+  }
+  let enterParams = {
+    enterCode: "b7a07f6f2d564f2c99d539be7d28ac91",
+liveId: "live-848716751798272",
+    tenantId: "20123",
+    userId: 10037628,
+    userInfo: {nickname: "xxxx-xxxx", avatar: "", role: 4},
+    container: document.getElementById('root'),
+  }
+  if(gqs('liveId')) {
+    enterParams = {
+      enterCode: gqs('enterCode'),
+      liveId: gqs('liveId'),
+      tenantId: gqs('tenantId'),
+      userId: gqs('userId') || undefined,
+      userInfo: {nickname: gqs('nickname'), avatar: "", role: gqs('role')},
+      container: document.getElementById('root'),
+      platform: gqs('platform')
+    }
+  }
+  // tenantId=2027176802&enterCode=eee95809e2c14584885e233378bfca77&userId=9545210&liveId=live-848415022481408&nickname=ABC10&role=4
+  // 20123&enterCode=6d934a4022e34a458681a981f682c8b5&userId=57608602&liveId=live-848413962895360&nickname=%E5%BC%A0%E5%8D%8B610&role=4
+  const sdk = new Liveroom({...enterParams})
+</script>
+</body>
+</html>

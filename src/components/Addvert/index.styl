@@ -1,0 +1,80 @@
+#living-ad-wall{
+  position: absolute;
+  right: 24px;
+  bottom: 74px;
+  z-index: 999;
+  border-radius: 4px;
+  cursor pointer
+  &.is-text{
+    padding: 0 16px;
+    background: #252525;
+  }
+  .living-ad-text{
+    height: 48px;
+    line-height: 48px;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 500;
+    background: url(https://img.kaikeba.com/a/44321141800202zgpy.png) right center no-repeat;
+    background-size: 32px;
+    .text {
+      position: relative;
+      margin-right: 40px;
+      padding-right: 8px;
+      word-wrap: break-word;
+      &::before {
+        content: ' ';
+        position: absolute;
+        top: -4px;
+        right: 0;
+        width: 1px;
+        height: 24px;
+        background: rgba(255, 255, 255, .1)
+      }
+    }
+  }
+  .living-ad-img {
+    display: block;
+    width: 180px;
+    height: 135px;
+    border-radius: 4px;
+  }
+}
+
+
+#m-living-ad-wall{
+  position: absolute;
+  right: 20px;
+  bottom: 65px;
+  margin-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+  cursor pointer
+
+  &.m-is-text {
+    right: 10px;
+    padding: 0px 10px;
+    background: rgba(0, 0, 0, .4)
+  }
+  .m-living-ad-img{
+    width: 104px;
+    height: 78px;
+    border-radius: 4px;
+  }
+  .m-living-ad-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 97px;
+    height: 44px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #fff;
+    font-weight: 500;
+    word-wrap: break-word;
+    background: url(https://img.kaikeba.com/a/13506142800202udys.png) right center no-repeat;
+    background-size: 25px;
+    .m-text {
+      margin-right: 28px;
+    }
+  } 
+}

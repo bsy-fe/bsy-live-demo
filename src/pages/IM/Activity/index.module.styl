@@ -1,0 +1,73 @@
+@import '../common.styl'
+
+//.bsy-liveroom, .bsy-m-liveroom
+  .activity-container
+    height 100%
+    padding 24px 16px
+    overflow auto
+
+    ul, li {
+      padding: 0
+      margin: 0
+    }
+
+  .activity-item-list
+    margin-bottom 16px
+
+    .list-cur
+      cursor pointer
+
+    .list-item
+      padding 16px 12px
+      background-color #1A1A1A
+      border-radius 4px
+      font-size 14px
+      color #ddd
+      position relative
+      word-wrap: break-word;
+
+      *
+        line-height: 1.5715
+
+      .end-icon
+        display inline-block
+        width 53px
+        height 16px
+        background url(https://img.kaikeba.com/22124102400202lcww.png)
+        background-size 53px 16px
+        position absolute
+        right 0
+        top 0
+        color #999
+        font-size 12px
+        text-align center
+        line-height 16px
+
+      .btn-container
+        text-align center
+
+    :global(.{$ant-prefix}-btn-primary)
+      background-color #00A5E4
+      border-color #00A5E4
+
+      &:hover
+        background-color #1AC0FF
+        border-color #1AC0FF
+
+    :global(.{$ant-prefix}-btn)
+      padding 0 22px
+      border-radius 3px
+
+  .m-activity-item-list
+    margin-bottom 10 * $vw
+
+    .m-list-item
+      padding 14 * $vw 18 *$vw
+      font-size 14 * $vw
+      line-height 20 * $vw
+      color #fff
+      font-weight 500
+      word-wrap break-word
+      position relative
+      background-color #1D1D1D
+      border-radius 13 * $vw

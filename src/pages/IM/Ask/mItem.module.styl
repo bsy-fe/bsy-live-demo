@@ -1,0 +1,46 @@
+@import '../common.styl'
+.m-ask-item-container
+  padding 14 *  $vw 18 *  $vw
+  background-color #1D1D1D
+  border-radius 13 *  $vw
+  cursor pointer
+  margin-bottom 10 *  $vw
+  .m-ask-title-container
+    display flex
+    justify-content space-between
+    margin-bottom 5 *  $vw
+  .m-ask-type-name
+    font-size 16 *  $vw
+    color #fff
+    line-height 22 *  $vw
+  .m-ask-type-name:before
+    content ''
+    display inline-block
+    width 5 *  $vw
+    height 13 *  $vw
+    background-color $primary-color
+    margin-right 4 *  $vw
+  .m-ask-asked
+    width 44 * $vw
+    height:16 * $vw
+    background url('//img.kaikeba.com/a/25315161600202xzxr.png')
+    background-size cover
+    position relative
+    top -14 * $vw
+  .m-ask-item-content
+    font-size: 14 *  $vw
+    color #fff
+    line-height 20 *  $vw
+    word-wrap break-word
+    text-overflow -o-ellipsis-lastline
+    overflow hidden
+    text-overflow ellipsis
+    display: -webkit-box
+    -webkit-line-clamp 2
+    line-clamp: 2
+    -webkit-box-orient vertical
+    *
+      color #999!important
+    img
+      padding 8 *  $vw
+      max-width 260 *  $vw

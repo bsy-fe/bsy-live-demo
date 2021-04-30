@@ -1,0 +1,186 @@
+@import '../common.styl';
+.mask {
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    z-index 1000
+}
+.sendbox-wrapper
+  position relative
+  height 128px
+  // border-bottom: 1px solid #ccc
+  background #232323
+  
+  .edit-area
+    display block
+    width calc(100% - 74px)
+    height 52px
+    margin 0 16px
+    box-sizing: border-box
+    padding 8px 12px
+    resize none
+    border none
+    box-sizing border-box
+    background #3F3F3F
+    color #DDD
+    font-size 14px
+    border-radius  8px 0 0 8px
+    outline none
+
+
+
+  .send-area
+
+    .send-area {
+      right 0
+      bottom 0
+      top 0
+      background rgba(77,77,77,1)
+    }
+
+    background rgba(77,77,77,1)
+    position absolute
+    border none
+    right 16px
+    top 53px
+    padding 0
+    border-radius 0 8px 8px 0 
+    text-align: center
+    width 48px
+    height 52px
+    line-height 52px
+    display block
+    // &:hover 
+    //   background #0FBDFF
+    //   .send-icon 
+    //     background-image url ('https://img.kaikeba.com/71449171400202xlum.png')
+    //     opacity 1
+    .send-icon 
+      width 16px
+      height 16px
+      background url ('https://img.kaikeba.com/71449171400202xlum.png') center none
+      background-size cover
+      opacity 0.3
+      transition all .3s ease
+      vertical-align middle
+  .send-area
+    .send-area-active
+      background $primary-color
+      .send-icon 
+          background-image url ('https://img.kaikeba.com/71449171400202xlum.png')
+          opacity 1
+.sendbox-wrapper-mute 
+  .edit-area 
+    color #999
+    line-height 17px
+  .send-area 
+    background #4d4d4d
+    border: none
+
+.sendbox-wrapper-m
+  box-sizing border-box
+  position relative
+  min-height 55*$vw
+  // display flex
+  // align-items center
+  padding 8*$vw 0
+  padding-top: 10px;
+  // padding-bottom 8*$vw
+  // border-top: 1*$vw solid #ccc
+  background transparent 
+  padding-bottom 0
+  // &:after
+  //   content: ""
+  //   position absolute
+  //   top -24*$vw
+  //   height 24*$vw
+  //   background linear-gradient(to top ,rgba(39,39,39,1) 0%,rgba(39,39,39,0) 100%)
+  //   width 100vw
+  .edit-area-box 
+    position relative
+    width  304*$vw
+    margin 0 12*$vw
+  .edit-area-box-foucs 
+    width  304*$vw
+  .edit-area
+    display block
+    width 100%
+    height 35*$vw
+    line-height 20*$vw
+    box-sizing border-box
+    outline none
+   
+    box-sizing: border-box
+    padding 7*$vw 35*$vw 7*$vw 12*$vw
+    resize none
+    border none
+    box-sizing border-box
+    background rgba(0,0,0,0.24)
+    color #fff
+    font-size 12*$vw
+    border-radius 18*$vw
+    transition width 0.2s ease
+  
+  .send-area-box 
+    position absolute
+    top 11*$vw 
+    right 12*$vw
+    width 33*$vw
+    border-radius 50%
+    width 33*$vw
+    height 33*$vw
+    background #000
+    border none
+    text-align center
+    button
+      border-radius 50%
+      width 33*$vw
+      height 33*$vw
+      background none
+      border none
+      padding 0
+    .send-icon 
+      width 33*$vw
+      height 33*$vw
+      background url('https://img.kaikeba.com/53658161600202jgvl.png') center
+      background-size cover
+      // opacity 0.3
+      transition all .3s ease
+      vertical-align middle
+    .send-area-active
+      background #000
+      .send-icon 
+        background-image url('https://res-qn.baoshiyun.com/a/43531101301202ryjd.png')
+        opacity 1
+  .sendbox-wrapper-mute 
+    .edit-area 
+      color #999
+    .send-area 
+      background #4D4D4D
+      border: none
+  .icon-e 
+    position absolute
+    top 6.5*$vw
+    right 6*$vw
+    width 20*$vw
+    height 20*$vw
+    background url(https://img.kaikeba.com/82857182400202frhf.png) center no-repeat
+    background-size cover 
+  .icon-active
+    background-image url(https://img.kaikeba.com/72209171400202flfv.png)
+  .icon-mute 
+    background-image url(https://img.kaikeba.com/82857182400202frhf.png)
+    &:hover
+      background-image url(https://img.kaikeba.com/82857182400202frhf.png)
+  .toolbar-wrapper-container
+    position absolute
+    right 0
+    // left 200*$vw
+    top 10*$vw
+    .like-box
+      position absolute
+      right 20*$vw
+
+

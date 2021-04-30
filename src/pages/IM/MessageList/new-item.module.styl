@@ -1,0 +1,183 @@
+/**
+* @author 杨欣
+* @date 2020-08-11 15:19
+*/
+@import '../common.styl';
+
+  // .msg-item {
+    
+  //   * {
+  //     line-height 1.5
+  //   }
+
+  //   margin-bottom 8px
+  //   position relative
+
+  //   .info {
+  //     padding-right 60px
+  //     display inline-block
+  //     position relative
+  //   }
+
+  //   .info-box {
+  //     background: rgba(0, 0, 0, 0.24);
+  //     border-radius: 4px;
+  //     padding 3px 8px
+  //     font-size 14px
+  //     font-weight 400
+  //     vertical-align: middle;
+  //   }
+
+  //   .text-wrapper {
+  //     word-break break-all
+  //     color rgba(255, 255, 255, .85)
+
+
+  //     .emj-img {
+  //       width: 30px;
+  //       height: 30px;
+  //     }
+  //   }
+
+  //   .nick {
+  //     color rgba(255, 255, 255, 0.65)
+  //   }
+
+  //   .title {
+  //     font-size 12px
+  //     padding 2px 4px
+  //     border-radius 1px
+  //     margin-right 8px
+  //   }
+
+  //   .img {
+  //     margin-top 4px
+  //   }
+
+  //   :hover {
+  //     .hover-function {
+  //       display block
+  //     }
+  //   }
+
+  //   .hover-function {
+  //     position: absolute;
+  //     top 0
+  //     right 0
+  //     white-space: nowrap;
+  //     text-decoration: underline;
+  //     display: none;
+  //     font-size: 12px;
+  //     color: rgba(153, 153, 153, 1);
+  //     line-height: 12px;
+  //     margin: 4px;
+  //     cursor: pointer;
+
+  //     &:hover {
+  //       color: #00A5E4;
+  //     }
+  //   }
+
+  // }
+.user {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-msg-item {
+  * {
+    line-height 1.5
+  }
+  // background: rgba(0, 0, 0, 0.24)
+  margin-bottom 8 * $vw
+
+  .info {
+    //padding-right 60  * $vw
+    display inline-block
+    position relative
+  }
+
+  .info-box {
+    background: rgba(0, 0, 0, 0.24);
+    border-radius: 4px;
+    padding 3px 8 * $vw
+    line-height 20 * $vw
+    font-size 14 * $vw
+    font-weight 400
+  }
+
+  .text-wrapper {
+    word-break break-all
+
+    color rgba(255, 255, 255, .85)
+    vertical-align: middle;
+
+
+
+    /*    &.sp {
+          color #333
+          background #f2f2f2
+        } */
+
+    .emj-img {
+      width: 22 * $vw;
+      height: 22 * $vw;
+    }
+  }
+
+  .nick {
+    color rgba(255, 255, 255, 0.65)
+  }
+
+  .title {
+    font-size 12 * $vw
+    padding 2px 4px
+    border-radius 1px
+    margin-right 8 * $vw
+  }
+
+  .img {
+    margin-top 4px
+  }
+
+  :hover {
+    .hover-function {
+      display block
+    }
+  }
+
+  .hover-function {
+    position: absolute;
+    top 0
+    right 0
+    white-space: nowrap;
+    text-decoration: underline;
+    display: none;
+    font-size: 12 * $vw;
+    color: rgba(153, 153, 153, 1);
+    line-height: 12 * $vw;
+    margin: 4px;
+    cursor: pointer;
+
+    &:hover {
+      color: #00A5E4;
+    }
+  }
+
+}
+
+.repeat-num {
+  position absolute
+  right 0
+  top 0
+  color: $primary-color;
+  font-weight bold
+  font-size 36px
+}
+
+.emj-img {
+  width: 30px;
+  height: 30px;
+}

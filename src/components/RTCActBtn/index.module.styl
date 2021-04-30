@@ -1,0 +1,71 @@
+// 销转直播 按钮
+.active-btn-wrap {
+  position: fixed;
+  right: 12px;
+  bottom: calc(90vw - 141px)
+  display: flex;
+  flex-direction: column;
+  color: white;
+  z-index: 99;
+  .active-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .btn-icon {     
+    width: 24px;
+    height: 24px;
+    background-size: 100% 100%;
+  }
+  .active-name {
+    background: rgba(0, 0, 0, 0.4);
+    height: 12px;
+    border-radius: 7px;
+    padding: 0 6px;
+    margin-top: 3px;
+    box-sizing: border-box;
+    display: flex;
+  }
+
+  .active-name-scale {
+    font-size: 12px;
+    transform: scale(0.75);
+    transform-origin: center;
+  }
+  
+
+  .qa-btn-icon {
+    background: url(https://res-qn.baoshiyun.com/a/40731171201202vymj.png);
+    background-size: 100% 100%;
+  }
+  
+  .active-btn-icon {
+    background: url(https://res-qn.baoshiyun.com/a/84141171201202bgfv.png);
+    background-size: 100% 100%;
+  }
+  
+  .sale-btn-icon {
+    background: url(https://res-qn.baoshiyun.com/a/73400222201202qipq.png);
+    background-size: 100% 100%;
+  }
+  
+  .active-box:active {
+    .active-name {
+      background: rgba(0, 0, 0, 0.6);
+    }
+    .qa-btn-icon {
+      background: url(https://res-qn.baoshiyun.com/a/91141171201202tkvi.png);
+      background-size: 100% 100%;
+    }
+    .active-btn-icon {
+      background: url(https://res-qn.baoshiyun.com/a/00341171201202ewga.png);
+      background-size: 100% 100%;
+    }
+    .sale-btn-icon {
+      background: url(https://res-qn.baoshiyun.com/a/65500222201202hpqm.png);
+      background-size: 100% 100%;
+    }
+  } 
+}
+  

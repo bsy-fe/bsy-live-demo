@@ -1,0 +1,83 @@
+@import '~@/theme.styl'
+
+.ask-container
+  height 100%
+  overflow auto
+  padding 24px 16px
+
+.student-ask-item
+  .ask-item-container
+    padding 16px 12px
+    background-color #1A1A1A
+    border-radius 4px
+    cursor pointer
+    margin-bottom 16px
+
+  &:hover
+    .ask-item-content
+      color #ddd
+
+      *
+        color #ddd !important
+
+    .ask-item-tea-content
+      color #ddd
+
+      *
+        color #ddd !important
+
+    .ask-item-type
+      color #ddd
+
+  .ask-no-cur
+    cursor default
+
+  .ask-item-content
+    font-size: 14px
+    color #999
+    line-height 20px
+    word-wrap break-word
+    text-overflow -o-ellipsis-lastline
+    overflow hidden
+    text-overflow ellipsis
+    display -webkit-box
+    -webkit-line-clamp 2
+    line-clamp 2
+    -webkit-box-orient vertical
+
+    *
+      color #999 !important
+
+    img
+      padding 8px
+      max-width 260px
+
+  .ask-title-container
+    display flex
+    justify-content space-between
+    margin-bottom 5px
+
+  .ask-type-name
+    font-size 12px
+    color #ddd
+    line-height 16px
+
+  .ask-type-name:before
+    content ''
+    display inline-block
+    width 4px
+    height 4px
+    border-radius 2px
+    background-color $primary-color
+    margin-right 4px
+    position relative
+    top -3px
+
+  .ask-asked
+    padding 0 8px
+    line-height 16px
+    background-color $primary-color - #25D8F0
+    border-top-right-radius 3px
+    border-bottom-left-radius 3px
+    font-size 12px
+    color #fff

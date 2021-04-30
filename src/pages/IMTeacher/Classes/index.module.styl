@@ -1,0 +1,109 @@
+@import "~@/theme.styl"
+
+.classes-wrapper
+  color #fff
+  overflow-y scroll
+  overflow-x hidden
+  height 100%
+  padding 20px
+  .p20 
+    padding: 10px
+  .search-container 
+    display flex
+    justify-content space-between
+    :global
+      .{$ant-prefix}-input-search
+        width 50vw
+  .table-pagination
+    display: flex
+    justify-content space-between
+    text-align right
+    *
+      line-height 22px
+  .table-list
+    .table-item 
+      display flex
+      justify-content space-between
+      margin-bottom 20px
+      white-space nowrap
+      .left
+        flex:  1
+        display: flex
+        overflow: hidden
+        text-overflow: ellipsis
+      .title
+        height 18px
+        line-height 18px
+        text-align center
+        padding 0 4px
+        font-size 12px
+        margin-right 8px
+        background #434343
+        min-width 30px
+        border-radius: 100px 100px 100px 0
+      
+      .name
+        line-height 18px
+        color: #BFBFBF
+        overflow: hidden
+        text-overflow: ellipsis
+        margin-right: 4px
+        font-size: 14px
+
+      .btn-container
+         overflow: hidden;
+        *
+          user-select none
+      .btn
+        font-size: 14px
+        line-height 18px
+        color #0A62E1
+        cursor pointer
+        display inline-block
+      .btn-mic
+        font-size: 12px
+        line-height 18px
+        color #fff
+        width 30px
+        height 18px
+        background #004FAF
+        border-radius 4px
+        cursor pointer
+        display inline-block
+        text-align center
+        margin-left: 11px
+
+
+
+
+
+
+
+
+  :global 
+    
+    .{$ant-prefix}-checkbox-wrapper
+      color #fff
+    .{$ant-prefix}-pagination-item a
+      color #fff
+    .{$ant-prefix}-pagination-next
+      &:focus
+        a
+          color: #fff
+      
+      a 
+        color #fff
+    .{$ant-prefix}-pagination-prev
+
+      &:focus
+        a
+          color: #fff
+      
+      a 
+        color #fff
+
+    .{$ant-prefix}-pagination-item-active
+      background-color: $primary-color
+      color: #fff
+    .{$ant-prefix}-pagination-disabled a, .{$ant-prefix}-pagination-disabled:hover a, .{$ant-prefix}-pagination-disabled:focus a, .{$ant-prefix}-pagination-disabled .{$ant-prefix}-pagination-item-link, .{$ant-prefix}-pagination-disabled:hover .{$ant-prefix}-pagination-item-link, .{$ant-prefix}-pagination-disabled:focus .{$ant-prefix}-pagination-item-link
+      color #fff

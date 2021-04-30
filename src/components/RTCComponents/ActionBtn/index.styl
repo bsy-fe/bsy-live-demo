@@ -1,0 +1,49 @@
+@import '~@/theme.styl'
+
+.rtc-action-wall{
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+.rtc-action{
+  width: 48px;
+  height: 48px;
+  line-height: 17px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-wrap: break-word;
+  color: #fff;
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+
+  &.normal, &.waiting{
+    background: $primary-color;
+    &:hover{
+      background: $primary-color;
+      opacity .7
+    }
+    &:active{
+      background: $primary-color;
+    }
+  }
+  &.dropped{
+    background: #E21F2B;
+    &:hover{
+      background: #FF2935
+    }
+    &:active{
+      background: #C01A20
+    }
+  }
+  &.loading{
+    cursor: not-allowed;
+  }
+}

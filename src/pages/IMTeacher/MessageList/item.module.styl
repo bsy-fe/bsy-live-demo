@@ -1,0 +1,346 @@
+@import '../common.styl';
+
+
+
+
+.msg-item {
+  display: flex;
+  margin: 16px 0;
+  justify-content: flex-start;
+
+  &:hover {
+    .hover-function {
+      display: block !important;
+    }
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    margin-top: 0px;
+    margin-right: 8px;
+    background: #ccc;
+    border-radius: 50%;
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+  }
+
+  .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .info-box {
+  }
+
+  .time {
+    font-size: 14px;
+    color: #999;
+    line-height: 15px;
+    align-items: center;
+    display: flex;
+    height: 15px;
+    position: relative;
+
+    div {
+      width: auto;
+      max-width: 200px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .title {
+      padding: 0 4px;
+      height: 18px;
+      border-radius: 8px 8px 8px 0;
+      font-size: 12px;
+      margin-right: 4px;
+      line-height: 18px;
+      display: inline-block;
+    }
+
+    .nick {
+      font-size: 14px;
+      color: #8C8C8C;
+    }
+  }
+
+  .persnal-title {
+    width: auto;
+    height: 14px;
+    margin-right: 5px;
+  }
+
+  // .message-img {
+  // max-width 80vw,
+  // height auto
+  // }
+  .message-img {
+    max-width: 100%;
+    cursor: crosshair;
+    display: block;
+  }
+
+  .text {
+    position: relative;
+    display: inline-block;
+    max-width: 280px;
+    margin-top: 5px;
+    margin-right: 48px;
+    padding: 5px 12px;
+    background: #1F1F1F;
+    border-radius: 2px 16px 16px 16px;
+    color: #D9D9D9;
+    font-size: 14px;
+    line-height: 22px;
+    word-break: break-all;
+    overflow-wrap: break-word;
+
+    highlight()
+  }
+
+  .hover-function {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    
+    white-space: nowrap;
+    text-decoration: underline;
+    display: none;
+    font-size: 12px;
+    color: rgba(153, 153, 153, 1);
+    line-height: 12px;
+    margin: 0px 4px;
+    cursor: pointer;
+
+    &:hover {
+      color: #00A5E4;
+    }
+  }
+
+  .emj-img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.self {
+  flex-direction: row-reverse;
+
+  &:hover {
+    .hover-function {
+      display: none !important;
+    }
+  }
+
+  .info, .info-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .avatar {
+    margin: 0 0 0 0px;
+    display: none;
+  }
+
+  .text {
+    background: #434343;
+    border-radius: 16px 2px 16px 16px;
+    margin-right: 0;
+    margin-left: 48px;
+    color: #D9D9D9;
+
+    highlight()
+
+    .hover-function {
+      left: auto;
+      right: 100%;
+      display: none;
+    }
+  }
+}
+
+.msg-item-m {
+  padding-left: 4 * $vw;
+
+  .avatar {
+    height: 30 * $vw;
+    width: 30 * $vw;
+    line-height: 30 * $vw;
+    text-align: center;
+    font-size: 11 * $vw;
+    font-weight: bolder;
+    color: #001E2A;
+    margin-top: 3 * $vw;
+    margin-right: 6 * $vw;
+  }
+
+  .time {
+    font-size: 12 * $vw;
+    color: #999;
+    display: inline;
+    padding-right: 9 * $vw;
+  }
+
+  .text {
+    position: relative;
+    display: inline-block;
+    max-width: 300 * $vw;
+    margin-top: 5px;
+    margin-right: 48 * $vw;
+    padding: 8 * $vw 12 * $vw;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15 * $vw;
+    color: #FFF;
+    font-size: 14 * $vw;
+    word-break: break-all;
+
+    highlight()
+
+    img {
+      max-width: 100%;
+      // height 16 * $vw
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0 * $vw;
+      left: -6 * $vw;
+      width: 12 * $vw;
+      height: 10 * $vw;
+      background: url('https://img.kaikeba.com/11331102400202cusz.png') center no-repeat; // img.kaikeba.com/11331102400202cusz.png) center no-repeat
+      background-size: cover;
+      display: none;
+    }
+
+    .hover-function {
+      position: absolute;
+      top: 0;
+      left: 100%;
+      white-space: nowrap;
+      text-decoration: underline;
+      display: none;
+      font-size: 11 * $vw;
+      color: rgba(153, 153, 153, 1);
+      line-height: 12 * $vw;
+      margin: 10 * $vw 4 * $vw;
+      cursor: pointer;
+
+      &:hover {
+        color: #00A5E4;
+      }
+    }
+  }
+
+  .emj-img {
+    width: 20 * $vw;
+    height: 20 * $vw;
+  }
+}
+
+// 通知样式
+.msg-item-notify {
+  // padding-left: 35px;
+  // padding-right: 20px
+  // padding: 3px 0;
+  text-align: center;
+  color: $primary-color;
+  font-size: 14px;
+  margin-bottom: 8px;
+
+  .notify-body {
+    padding: 3px 8px;
+    line-height: 20px;
+    border-radius: 4px;
+  }
+
+  .nickname {
+    color: #999;
+    font-size: 14px;
+  }
+
+  &.msg-item-notify-custom {
+    color: #fff;
+  }
+
+  .notify-pre-img {
+    height: 20px;
+    width: 20px;
+    margin-right: 8px;
+  }
+}
+
+.msg-item-notify-buy {
+  color: $primary-color;
+  font-size: 14px;
+
+  .nickname {
+    color: #999;
+    font-size: 14px;
+  }
+}
+
+.msg-item-notify-m {
+  text-align: left;
+  margin-bottom: 8 * $vw;
+
+  .notify-body {
+    padding: 3px 8 * $vw;
+    line-height: 20 * $vw;
+    border-radius: 4 * $vw;
+  }
+
+  &:last-child {
+    margin-bottom: 20 * $vw;
+  }
+
+  &.msg-item-notify-custom {
+    color: #fff;
+  }
+
+  .notify-pre-img {
+    height: 20 * $vw;
+    width: 20 * $vw;
+    margin-right: 8 * $vw;
+  }
+}
+
+.notify-body {
+  max-width: 100%;
+  word-break: break-all;
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.notify-pre-img {
+  display: inline-block;
+  vertical-align: middle;
+  background-image: url('//img.kaikeba.com/a/71319152900202vymz.png'); // img.kaikeba.com/a/71319152900202vymz.png)
+  background-size: contain;
+}
+
+.msg-item-img {
+  .text {
+    // background none
+    // &:after {
+    // display: none}
+  }
+
+  .message-img {
+    margin-top: 7px;
+    border-radius: 4px;
+    margin-bottom: 7px;
+
+  }
+}
+
+

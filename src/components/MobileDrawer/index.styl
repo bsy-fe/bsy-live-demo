@@ -1,0 +1,72 @@
+
+.drawer-wall{
+  position fixed
+  bottom 0
+  z-index 1000
+  width 100%
+  background rgba(0,0,0, .6)
+  transform translate3d(0, 100%, 0)
+  .drawer-content-wrapper{
+    width 100%
+    height 100%
+    position relative
+
+    .drawer-content {
+      height 100%
+      width 100%
+      padding-top 22px
+    }
+
+    .drawer-close {
+      position absolute
+      right 4px
+      top 4px
+      color #fff
+    }
+  }
+}
+
+// animate__fadeInUp
+
+.animate__animated {
+  animation-duration: .3s;
+  animation-fill-mode: both;
+}
+
+// animate__fadeInUp
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+.animate__fadeInUp {
+  -webkit-animation-name: fadeInUp;
+  animation-name: fadeInUp;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+}
+.animate__fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+}

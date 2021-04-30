@@ -1,0 +1,126 @@
+@import './common.styl'
+
+.chat-container
+  line-height 1.5 
+  position relative
+  left 0
+  top 0
+  width 100%
+  height 100%
+  align-items top
+  background-color #0C0C0C
+  .tab-header-container
+    // width: 100%
+    height: 100%
+    // display: flex
+  .tab-head-box
+    height: 100%
+    flex:1
+  .tab-refresh-container
+    width: 56px
+    height: 39px
+    background: #1F1F1F
+    border-radius: 4px 0px 0px 4px
+    line-height: 39px
+    text-align: center
+  .tab-refresh-btn
+    width: 40px
+    height 20px
+    line-height: 20px
+    padding:0
+    font-size: 12px
+    margin: 0 auto
+  .login-area
+    width 100%
+    height 100%
+    display flex
+    justify-content center
+    align-items center
+  .tab-pane-container
+    position relative
+  .tab-pane-icon
+    width 16px
+    height 16px
+    margin-right 2px
+    position relative
+    top -1px
+    opacity 0.7
+    vertical-align middle
+  :global(.{$ant-prefix}-tabs-bar *)
+    line-height: 1.5
+  :global(.{$ant-prefix}-tabs)
+    height 100%
+    color #999
+    :global(.{$ant-prefix}-tabs-bar)
+      margin 0
+      border-bottom: 0
+      text-align: left;
+    :global(.{$ant-prefix}-tabs-top-content)
+      height calc(100% - 39.5px)
+      // width: calc(100% + 56px)
+      :global(.{$ant-prefix}-tabs-tabpane)
+        transition: none !important;
+        -webkeit-transition:none !important;
+       
+    :global(.{$ant-prefix}-tabs-tab-active)
+      .tab-pane-icon
+        opacity 1
+    :global(.{$ant-prefix}-tabs-tab)
+      margin: 0 5px
+      padding: 9px 0
+      transition all 0.3s
+      font-size 14px
+      margin-right: 24px
+      &:hover
+        // color #ddd
+        .tab-pane-icon
+          opacity 1
+        .tab-init-line
+          display block  
+    :global(.{$ant-prefix}-tabs-nav-wrap)
+      padding-left: 19px
+      background: #1f1f1f
+    :global(.{$ant-prefix}-tabs-tab:last-of-type)
+      // margin-right 0
+    :global(.{$ant-prefix}-tabs-tab-prev)
+      color #fff
+    :global(.{$ant-prefix}-tabs-tab-next)
+      color #fff
+    :global(.{$ant-prefix}-tabs-nav-container-scrolling)
+      padding: 0 17px
+      padding-left: 22px
+      border-radius: 0px 4px 4px 0px;
+      border-right: 1px solid #0C0C0C;
+      background:#1F1F1F
+      :global(.{$ant-prefix}-tabs-nav-scroll)
+        border-radius: none
+        border-right:0
+        background:none
+      :global(.{$ant-prefix}-tabs-nav-wrap)
+        padding-left: 0px
+    :global(.{$ant-prefix}-tabs-tab:last-child)
+      margin-right: 16px
+    :global(.{$ant-prefix}-tabs-nav-scroll)
+      border-radius: 0px 4px 4px 0px;
+      border-right: 1px solid #0C0C0C;
+      background:#1F1F1F
+    :global(.{$ant-prefix}-tabs-tab-prev.{$ant-prefix}-tabs-tab-arrow-show)
+      width: 17px !important
+      margin-left: 4px
+    :global(.{$ant-prefix}-tabs-tab-next.{$ant-prefix}-tabs-tab-arrow-show)
+      width: 17px !important
+      margin-right: 4px
+.m-chart-container
+  :global(.{$ant-prefix}-tabs)
+    :global(.{$ant-prefix}-tabs-tab)
+      margin-right 47 * $vw
+      margin-left 0
+    :global(.{$ant-prefix}-tabs-tab:last-of-type)
+      margin-right 0
+    :global(.{$ant-prefix}-tabs-bar)
+      border 1px solid rgba(51,51,51,.5)
+    :global(.{$ant-prefix}-tabs-ink-bar)
+        border-radius 2 *  $vw !important
+        background-color #00AFF2
+    :global(.{$ant-prefix}-tabs-tab-active)
+        color #00AFF2 !important

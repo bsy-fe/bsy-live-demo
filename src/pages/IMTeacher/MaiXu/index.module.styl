@@ -1,0 +1,180 @@
+@import '~@/theme.styl'
+
+.teacher-mai-container
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex
+  flex-direction: column
+  .mai-no-template-wrapper
+    height: 100%
+    position relative
+  .mai-no-template-container
+    position absolute
+    left 50%
+    top 50%
+    transform translate(-50%,-50%)
+    text-align center
+    .nodata-img
+      width: 120px
+      height: 120px
+    .nodata-info 
+      font-size: 14px
+      font-weight: 400
+      color: #8C8C8C
+      line-height: 22px
+  .table-list
+    padding: 20px
+    height: 100%
+    overflow-y: scroll
+  .table-item 
+    display flex
+    justify-content space-between
+    margin-bottom 20px
+    white-space nowrap
+    .left
+      flex:  1
+      display: flex
+      overflow: hidden
+      text-overflow: ellipsis
+      color: #fff
+      .name 
+        font-size: 14px
+        margin-right: 4px
+        color: #bfbfbf
+        overflow: hidden
+        text-overflow: ellipsis
+    .title
+      height 18px
+      line-height 18px
+      text-align center
+      padding 0 4px
+      font-size 12px
+      margin-right 8px
+      background #434343
+      min-width 30px
+      border-radius: 100px 100px 100px 0px;
+    .right
+      display: flex
+      justify-content: space-between
+      height: 18px
+      align-items: center
+      *
+        user-select none
+      .delete
+        cursor pointer
+        margin-right: 8px
+        opacity 0.8
+        &:hover
+          opacity 1
+        img
+          width: 16px
+          height: 16px
+          vertical-align: middle
+    .btn
+      font-size: 14px
+      line-height 18px
+      color #0A62E1
+      cursor pointer
+      user-select none
+    .hands-btn
+      height 18px
+      :global
+        .{$ant-prefix}-btn
+          // width: 30px
+          height: 18px
+          line-height: 18px
+          padding: 0 3px
+          margin: 0
+          color: #fff
+          background: rgba(0, 79, 175, 0.8)
+          border: 0
+          border-radius: 4px
+          font-size: 12px
+          &:hover
+            background: rgba(0, 79, 175, 1)
+            color: #fff
+          &:focus
+            background: rgba(0, 79, 175, 0.7)
+            color: #fff
+        .{$ant-prefix}-btn[disabled]
+          background: #434343
+          color: #8C8C8C
+          &:hover
+            background: #434343
+            color: #8C8C8C
+          &:focus
+            background: #434343
+            color: #8C8C8C
+    .hands-down
+      :global
+        .{$ant-prefix}-btn
+          background:rgba(255, 41, 53, 0.8)
+          &:hover
+            background: rgba(255, 41, 53, 1)
+          &:focus
+            background: rgba(255, 41, 53, 0.7)
+  .table-pagination
+    text-align: right 
+    margin-bottom: 30px
+    margin-top: 9px
+    margin-right: 22px
+    *
+      line-height 22px
+   :global 
+    .{$ant-prefix}-checkbox-wrapper
+      color #fff
+    .{$ant-prefix}-pagination-item a
+      color #fff
+    .{$ant-prefix}-pagination-item-active
+      background-color: $primary-color
+      color: #fff
+    .{$ant-prefix}-pagination-disabled a, .{$ant-prefix}-pagination-disabled:hover a, .{$ant-prefix}-pagination-disabled:focus a, .{$ant-prefix}-pagination-disabled .{$ant-prefix}-pagination-item-link, .{$ant-prefix}-pagination-disabled:hover .{$ant-prefix}-pagination-item-link, .{$ant-prefix}-pagination-disabled:focus .{$ant-prefix}-pagination-item-link
+      color: #fff !important
+    .{$ant-prefix}-pagination-item-link
+      color: #fff !important
+  .setting
+    height 32px
+    display flex 
+    align-items center
+    background #262626
+    padding 0 16px
+
+
+
+  .setting-container
+    // position absolute
+    top 20px
+    right 28px
+    font-size 14px;
+    width 80px
+    height 14px
+    line-height 14px
+    cursor pointer
+    display flex
+    align-items center
+    font-family PingFangSC-Regular, PingFang SC
+    font-weight 400
+    color: #8C8C8C
+    user-select none
+
+    .mic-icon, .mic-icon-select
+      width 12px
+      height 12px
+      transition all .3s ease
+      border-radius 3px
+      border 1px solid #8C8C8C
+      margin-right 3px
+
+    .mic-icon
+      background url(data:;base64,=) no-repeat center
+      background-size cover
+      background-color transparent
+
+    //background url('https://img.kaikeba.com/65845122400202nvfz.png') no-repeat center
+
+    .mic-icon-select
+      background url('~@/assets/correct.svg') no-repeat center
+      background-size cover
+      background-color: $primary-color
+      border-color $primary-color
