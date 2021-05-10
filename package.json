@@ -96,11 +96,6 @@
     "dev": "dotenv -e .env.dev node scripts/start.js",
     "start": "dotenv -e .env.dev node scripts/start.js",
     "build": "dotenv -e .env.prod node --max_old_space_size=8192 scripts/build.js",
-    "build:pre": "dotenv -e .env.pre node scripts/build.js",
-    "build:test": "dotenv -e .env.test node --max_old_space_size=8192 scripts/build.js",
-    "postbuild:test": "node ding.js --mode test",
-    "postbuild:prod": "node ding.js --mode prod",
-    "postbuild": "node ding.js --mode prod",
     "lint": "eslint --fix ./src",
     "clean": "rm -rf ./node_modules/.cache"
   },

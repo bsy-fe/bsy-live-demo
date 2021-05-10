@@ -22,20 +22,6 @@ npm run dev
 npm run build
 ```
 
-### 用于测试环境
-
-```
-npm run build:test
-```
-
-### 使用方式
-
-该项目有三种使用方式：
-1. 将该项目整体打包，在目标项目中载入打包生成的js，进行调用并生成实例
-2. 将该项目中的代码作为目标项目的组件进行整合
-3. 参考该项目对bsy-live-sdk的调用方式和流程，在目标项目中自行编写符合自身需要的UI组件
-
-
 ### 修改主题色
 
 修改[src/theme.less](src/theme.less)和[src/theme.styl](src/theme.styl)里的颜色变量即可，更进一步的自定义设置需要取对应的组件样式表中修改
