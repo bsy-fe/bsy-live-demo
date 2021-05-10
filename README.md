@@ -51,23 +51,28 @@ npm run build:test
 ```bash
 ├── README.md
 ├── babel.config.js
-├── build
-│   ├── index.html
-│   ├── liveroom-latest.min.js // 打包之后生成的主文件，包含将Liveroom构造器挂载至window的操作
-│   ├── liveroom-latest.min.js.map
-│   ├── liveroom.min.js // 同一个文件，两个名字
-│   ├── liveroom.min.js.map
-│   └── readme.md
 ├── config
-│   ├── build.js // 打包命令
-│   ├── constants.js
-│   ├── path.js // resolvePath方法
-│   └── webpack.config.babel.js // webpack配置文件
+│   ├── env.js
+│   ├── getHttpsConfig.js
+│   ├── jest
+│   │   ├── cssTransform.js
+│   │   └── fileTransform.js
+│   ├── modules.js
+│   ├── paths.js
+│   ├── pnpTs.js
+│   ├── webpack.config.js
+│   └── webpackDevServer.config.js
 ├── jsconfig.json
 ├── package.json
 ├── postcss.config.js
 ├── public
-│   └── readme.md // build中的readme.md的源文件
+│   ├── favicon.ico
+│   ├── img
+│   │   ├── Logo.svg
+│   │   └── img_logo.png
+│   ├── index.html
+│   ├── manifest.json
+│   └── robots.txt
 └── src
     ├── api
     │   ├── activity.js // IM活动、红包相关的api接口
