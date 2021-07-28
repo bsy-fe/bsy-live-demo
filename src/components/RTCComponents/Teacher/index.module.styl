@@ -31,29 +31,53 @@
   display flex
   align-items center
   justify-content center
-  .play-icon{
+
+  .play-icon {
     width 40px
     height 40px
     cursor pointer
   }
 }
+.rtc-audio-mute{
+  position absolute
+  left 0
+  right 0
+  background url('https://res-qn.baoshiyun.com/a/95818190601202teej.png') center no-repeat
+}
+
+.teacher-video-disabled {
+  position absolute
+  left 0
+  top 0
+  width 100%
+  height 100%
+  z-index 200
+  background-color #434343
+  background-image url('//res-qn.baoshiyun.com/a/22901230601202ltqi.png?imageView2/0/interlace/1/q/90|imageslim')
+  background-repeat no-repeat
+  background-position: center
+  background-size: 64px 64px
+}
 
 // ================================================
 
-.m-rtc-teacher-container{
+.m-rtc-teacher-container {
   position absolute
   width 100%
-  height 100%  
+  height 100%
 }
-.m-teacher-video-wrap{
+
+.m-teacher-video-wrap {
   width 100%
-  height 100%  
+  height 100%
 }
-.m-teacher-container-live{
+
+.m-teacher-container-live {
   width 100%
-  height 100%  
+  height 100%
 }
-.m-teacher-container-rtc{
+
+.m-teacher-container-rtc {
   position relative
   width 25vw
   height 18.61vw
@@ -131,4 +155,16 @@
   left 0
   width 25vw
   height 18.61vw
+}
+.m-teacher-video-disabled{
+  position absolute
+  top 0
+  left 0
+  width 25vw
+  height 18.61vw
+  background-color #434343
+  background-image url('//res-qn.baoshiyun.com/a/22901230601202ltqi.png?imageView2/0/interlace/1/q/90|imageslim')
+  background-repeat no-repeat
+  background-position: center
+  background-size: 32px 32px
 }

@@ -23,7 +23,7 @@ const sendQuestion = async (item) => {
 
     return res
   } catch(res) {
-    let {msg} = res
+    let msg = res.msg
     if(res.data) {
       msg = res.data.msg
     }

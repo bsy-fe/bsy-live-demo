@@ -66,13 +66,15 @@ const RTCModeStore = {
     }
   },
   playStream(data, config, instance) {
+    let isSelf = data.uid === config.userId
+    let self = this.currentSeatList.find(i => i.buid === data.uid)
+    console.log(self)
     let isSuccess = instance.interactLive.rtc.playStream(
       data.uid,
       `rtc-${data.uid}`,
-      { fit: 'cover', muted: !!data.isSelf }
+      { fit: 'cover', muted: !!self.isSelf }
     )
     if (isSuccess) {
-      let self = this.currentSeatList.find(i => i.buid === data.uid)
       this._setSelfInitVideoAudioStatus(self, instance)
       // 视频镜像问题
       let video = document.querySelector(`#rtc-${data.uid}`).querySelector('video')
@@ -209,10 +211,9 @@ const RTCModeStore = {
   // 开启视频模式
   openUserVideo(instance) {
     let isHasSelf = this.currentSeatList.find((item) => item.isSelf)
-
-    isHasSelf &&
-      !isHasSelf.videoDisable &&
-      instance.interactLive.rtc.enableVideo()
+    if (!this.localSelfInfo.videoDisable && isHasSelf) {
+      isHasSelf.videoDisable && instance.interactLive.rtc.enableVideo()
+    }
   },
   // 设置初始化音频视频状态
   _setSelfInitVideoAudioStatus(data, instance) {

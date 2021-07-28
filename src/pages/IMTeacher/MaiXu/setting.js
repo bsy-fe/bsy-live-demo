@@ -24,9 +24,9 @@ const Setting = (props) => {
           payload: {
             rtcInfo: {
               ...rtcInfo,
-              audioDisable: !isOpenMic
-            }
-          }
+              audioDisable: !isOpenMic,
+            },
+          },
         })
         message.success('操作成功', 1)
       })
@@ -53,7 +53,7 @@ const Setting = (props) => {
 }
 const mapStateToProps = (state) => ({
   isOpenMic: state.mic.rtcInfo.audioDisable,
-  rtcInfo: state.mic.rtcInfo
+  rtcInfo: state.mic.rtcInfo,
 })
 
 export default connect(mapStateToProps, null)(Setting)

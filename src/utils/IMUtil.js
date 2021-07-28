@@ -4,45 +4,29 @@ eslint-disable camelcase
 
 import React from 'react'
 import store from '@/store'
-import {createArray, getUserDefinedFieldObj, isHKYClient, isJSONString, IsPC} from '@/utils'
+import {getUserDefinedFieldObj, isHKYClient, IsPC} from '@/utils'
 import getters from '@/store/getters'
-import {message, message as messagetip} from 'antd'
+import {message as messagetip} from 'antd'
+import {interval, timer} from 'rxjs'
 import {
-  GROUP_LIKE_NUM,
-  GROUP_SILENCE,
-  BSYIM_IM_INLINE_NUM,
-  BSYIM_IMERROR,
-  BSYIM_IMLOGIN,
-  BSYIM_IMONMESSAGE,
-  BSYIM_IMREDAY,
-  BSYIM_KICKED_OUT,
   CUSTOM_MSG,
+  DANMU_POSITIONS,
   GROUP_EVENT_NOTIFY,
-  GROUP_SHELF_SHOW,
+  GROUP_LIKE_NUM,
   GROUP_SHELF_HIDE,
-  BSYIM_GROUP_COMMON_CONTROL,
-  MULTI_PUSH_ADDR_CHANGED,
-  BSYIM_MULTI_PUSH_ADDR_CHANGED,
-  BSYIM_GET_GROUP_PROFILE,
-  BSYIM_SEND_MESSAGE,
-  BSYIM_SEND_MESSAGE_LIKE,
-  BSYIM_GET_GROUP_MEMBERLIST,
-  BSYIM_GET_MESSAGELIST,
-  BSYIM_SEND_CUSTSOM_IMAGE,
-  BSYIM_GET_GROUP_USERPROFILE,
-  BSYIM_COLLAPSE_SAME_MESSAGE,
-  ELEMENT_STYLES
+  GROUP_SHELF_SHOW,
+  GROUP_SILENCE,
+  MULTI_PUSH_ADDR_CHANGED
 } from '@/consts'
 
-import {
-  activityMessageBuffer,
-  chatMessageBuffer
-} from '@/utils/messageBuffer'
+import {activityMessageBuffer, chatMessageBuffer} from '@/utils/messageBuffer'
 
 import {globalConst} from '@/consts/globalConst'
 // import {AskPageEventEmitter} from '@/pages/IM/AskWrapper/consts'
 import {showLiveDialog} from '@/components/PopUp/showLiveDialog'
-import {ActivityEventEmitter, AskPageEventEmitter} from '@/consts/subjects'
+import {ActivityEventEmitter, AskPageEventEmitter, WhiteBoardRefresh} from '@/consts/subjects'
+import {BARRAGE} from './barrageStyle'
+
 
 // window.setInterval(() => {
 //   const msg = {
@@ -205,6 +189,10 @@ class IMUtilsClass {
     this.readyToDo(() => {
       this.getLikeNum()
     })
+
+    this.readyToDo(() => {
+      this.startSimulation()
+    })
   }
 
   logout = () => {
@@ -215,13 +203,13 @@ class IMUtilsClass {
     console.log('注册事件')
 
     this.client.on('text-message', (msg) => {
-      console.log('textmessage,', msg)
+      // console.log('textmessage,', msg)
       chatMessageBuffer.addMessage(msg)
     })
 
 
     this.client.on('img-message', (msg) => {
-      console.log('imgmessage,', msg)
+      // console.log('imgmessage,', msg)
       chatMessageBuffer.addMessage(msg, 2)
     })
 
@@ -231,11 +219,17 @@ class IMUtilsClass {
 
     this.client.on('system-message', msg => {
       const userDefinedObj = getUserDefinedFieldObj(msg)
-      // console.log('ui接到系统通知::', msg, userDefinedObj)
+      console.log('ui接到系统通知::', msg, userDefinedObj)
 
       const showPosition = userDefinedObj.content.show_position
-      if (showPosition === 1 || showPosition === 3) {
+      if ([DANMU_POSITIONS.CHAT, DANMU_POSITIONS.CHAT_AND_PLAYER].includes(showPosition)) {
         activityMessageBuffer.addMessage(msg)
+      }
+      if ([DANMU_POSITIONS.PLAYER, DANMU_POSITIONS.CHAT_AND_PLAYER].includes(showPosition)) {
+        const {event_type, notify_msg} = userDefinedObj.content
+        // let {event_type, notify_msg} = msg.target
+        const danmuHtml = BARRAGE[Number(event_type)](notify_msg)
+        this.client.sendDanmu(danmuHtml)
       }
     })
 
@@ -328,6 +322,16 @@ class IMUtilsClass {
       store.dispatch.message.setMuteList({userMuteList: buidList})
     })
 
+    this.client.on('re-join-group', ({error}) => {
+      console.log('=============重新加入了群组，错误为：', error)
+      WhiteBoardRefresh.next({from: 're-join-group'})
+    })
+
+    this.client.on('message-recalled', (event) => {
+      // "{"account_id":"10013801","msg_seq":592271}}"
+      store.dispatch.message.removeMessageBySeq(event.msg_seq)
+    })
+
   }
 
   destroy = () => {
@@ -382,8 +386,11 @@ class IMUtilsClass {
       ) {
         const showPosition = userDefinedFieldObj.content.show_position
         console.log('系统通知::', userDefinedFieldObj)
-        if (showPosition === 1 || showPosition === 3) {
+        if (showPosition === DANMU_POSITIONS.CHAT || showPosition === DANMU_POSITIONS.CHAT_AND_PLAYER) {
           activityMessageBuffer.addMessage(msg)
+        }
+        if (showPosition === DANMU_POSITIONS.PLAYER || showPosition === DANMU_POSITIONS.CHAT_AND_PLAYER) {
+          globalConst.client.sendDanmu(msg)
         }
       }
 
@@ -620,8 +627,9 @@ class IMUtilsClass {
     // })
   }
 
-  getMessageList = data => {
-    console.log('getMessageList 开始')
+  getMessageList = (count, nextReqMessageID) => {
+    console.log('getMessageList 开始', {count, nextReqMessageID})
+    return globalConst.client.getMessageList(count, nextReqMessageID)
     // return this.IMCommunicationInstance.createSession({
     //   type: BSYIM_GET_MESSAGELIST,
     //   params: data
@@ -708,6 +716,70 @@ class IMUtilsClass {
       const iframe = <iframe src={showUrl} frameBorder="0" style={{width: '100%', height: '100%'}}/>
       showLiveDialog({children: iframe})
     }
+  }
+
+  startSimulation() {
+    const msg = () => {
+
+      const time =  new Date().getTime().toString()
+      return ({
+        'ID': time,
+        'conversationID': 'GROUP@TGS#35ZGGGGHT',
+        'conversationType': 'GROUP',
+        'time': time,
+        'sequence': 48,
+        'clientSequence': 1129110015,
+        'random': 59349722,
+        'priority': 'Normal',
+        'nick': '模拟聊天人',
+        'avatar': 'https://learn.kaikeba.com/img_centre_man.png',
+        'isPeerRead': false,
+        'nameCard': '',
+        '_elements': [{'type': 'TIMTextElem', 'content': {'text': time}}],
+        'isPlaceMessage': 0,
+        'isRevoked': false,
+        'geo': {},
+        'from': '576086033',
+        'to': '@TGS#35ZGGGGHT',
+        'flow': 'out',
+        'isSystemMessage': false,
+        'protocol': 'JSON',
+        'isResend': false,
+        'isRead': true,
+        'status': 'success',
+        '_onlineOnlyFlag': false,
+        '_groupAtInfoList': [],
+        '_relayFlag': false,
+        'atUserList': [],
+        'cloudCustomData': '',
+        'payload': {'text': `${time}-${time}-${time}-${time}-${time}-${time}-${time}-${time}-${time}-${time}`},
+        'type': 'TIMTextElem'
+      })
+    }
+
+    const send = () => {
+      const timeout = Math.floor(Math.random()*1000)
+
+      timer(timeout).subscribe( () => {
+
+        const newMsg = msg()
+
+        chatMessageBuffer.addMessage(newMsg)
+
+        send()
+      })
+    }
+
+    timer(5000).subscribe(() => {
+
+      // send()
+      // interval(25).subscribe(() => {
+      //   const newMsg = msg()
+      //
+      //   chatMessageBuffer.addMessage(newMsg)
+      // })
+    })
+
   }
 }
 

@@ -38,7 +38,7 @@ const Classes = props => {
   const defaultPagination = {
     total: onlineNum,
     current: 1,
-    pageSize: 2
+    pageSize: 10
   }
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)

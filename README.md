@@ -16,13 +16,24 @@ npm install
 npm run dev
 ```
 
-### 本地测试方式
-
 ### 项目构建
 
 ```
 npm run build
 ```
+
+### 用于测试环境
+
+```
+npm run build:test
+```
+
+### 使用方式
+
+该项目有三种使用方式：
+1. 将该项目整体打包，在目标项目中载入打包生成的js，进行调用并生成实例
+2. 将该项目中的代码作为目标项目的组件进行整合
+3. 参考该项目对bsy-live-sdk的调用方式和流程，在目标项目中自行编写符合自身需要的UI组件
 
 
 ### 修改主题色
@@ -40,28 +51,23 @@ npm run build
 ```bash
 ├── README.md
 ├── babel.config.js
+├── build
+│   ├── index.html
+│   ├── liveroom-latest.min.js // 打包之后生成的主文件，包含将Liveroom构造器挂载至window的操作
+│   ├── liveroom-latest.min.js.map
+│   ├── liveroom.min.js // 同一个文件，两个名字
+│   ├── liveroom.min.js.map
+│   └── readme.md
 ├── config
-│   ├── env.js
-│   ├── getHttpsConfig.js
-│   ├── jest
-│   │   ├── cssTransform.js
-│   │   └── fileTransform.js
-│   ├── modules.js
-│   ├── paths.js
-│   ├── pnpTs.js
-│   ├── webpack.config.js
-│   └── webpackDevServer.config.js
+│   ├── build.js // 打包命令
+│   ├── constants.js
+│   ├── path.js // resolvePath方法
+│   └── webpack.config.babel.js // webpack配置文件
 ├── jsconfig.json
 ├── package.json
 ├── postcss.config.js
 ├── public
-│   ├── favicon.ico
-│   ├── img
-│   │   ├── Logo.svg
-│   │   └── img_logo.png
-│   ├── index.html
-│   ├── manifest.json
-│   └── robots.txt
+│   └── readme.md // build中的readme.md的源文件
 └── src
     ├── api
     │   ├── activity.js // IM活动、红包相关的api接口

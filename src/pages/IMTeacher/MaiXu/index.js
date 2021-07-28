@@ -6,6 +6,7 @@ import { Button, Pagination, message } from 'antd'
 import store from '@/store'
 import className from 'classnames/bind'
 import { connect } from 'react-redux'
+import {Subject} from 'rxjs'
 import roleEnum from '@/consts/roles'
 import getters from '@/store/getters'
 
@@ -14,15 +15,19 @@ import {
   studentOnSeatFromQueue,
   removeStudentFromQueue,
   studentOffSeat
-} from '@/api/mic'
+} from 'api/mic'
 import { BSYIM_TAB_WAITING } from '@/consts'
 import { roleEnum as roleEnumColor } from '@/components/IM/Hooks/useMessageItem'
 import { globalConst } from '@/consts/globalConst'
+import {debounceTime, tap, throttleTime} from 'rxjs/operators'
 import Setting from './setting'
 
 import styles from './index.module.styl'
+import {HTTP_STATUS} from "../../../consts/statusCode";
 
 const s = className.bind(styles)
+
+const getListSubject = new Subject()
 
 const Maixu = (props) => {
   const { activeKey, getMicSeatList, teacherList, rtcInfo } = props
@@ -34,6 +39,8 @@ const Maixu = (props) => {
   const [pagination, setPagination] = useState(defaultPagination)
   const [total, setTotal] = useState(0)
   const [current, setCurrent] = useState(1)
+  
+  
   const { role } = getters()
 
   let [list, setList] = useState([])
@@ -51,7 +58,11 @@ const Maixu = (props) => {
     if (item.isOpenMic) {
       studentOffSeat(item.uid)
         .then((res) => {
-          message.success('操作成功')
+          if(res && res.code === 1) {
+            message.success('操作成功')
+          } else {
+            message.warning(res.msg)
+          }
         })
         .catch((res) => {
           message.warning(res.data.msg)
@@ -59,7 +70,11 @@ const Maixu = (props) => {
     } else {
       studentOnSeatFromQueue(item.uid, item.nickname)
         .then((res) => {
-          message.success('操作成功')
+          if(res && res.code === 1) {
+            message.success('操作成功')
+          } else {
+            message.warning(res.msg)
+          }
         })
         .catch((res) => {
           message.warning(res.data.msg)
@@ -81,43 +96,15 @@ const Maixu = (props) => {
     )
   }
 
-  const getList = async () => {
-    let storeSeatList = await getMicSeatList()
-    let res = await getQueueList()
-    if (res && res.data) {
-      let waitList = res.data
-      storeSeatList.length && storeSeatList.forEach((e) => (e.isOpenMic = true))
-      if (waitList.length) {
-        waitList.forEach((e) => {
-          e.isOpenMic = false
-        })
-        // 过滤席位
-        waitList = waitList.filter((e) => {
-          return !storeSeatList.find((seat) => {
-            return e.uid === seat.uid
-          })
-        })
-      }
 
-      let newList = storeSeatList.concat(waitList)
-      newList.length &&
-        newList.forEach((item) => {
-          item.role = 'Member'
-          teacherList.length &&
-            teacherList.forEach((teacherItem) => {
-              if (String(item.uid) === String(teacherItem.userID)) {
-                item.role = teacherItem.role
-              }
-            })
-        })
-      console.log(newList, '123newList')
-      console.log(teacherList, 'teacherlist')
-      setList(newList)
-      setTotal(newList.length)
-    }
+
+
+  const getList = () => {
+    getListSubject.next(true)
   }
 
   const handleWatchEvent = () => {
+
     globalConst.client.on('queue-update', () => {
       getList()
     })
@@ -137,16 +124,78 @@ const Maixu = (props) => {
         }
       })
     })
+
+
+
+
+
   }
 
   useEffect(() => {
+
+    console.log('=============set函数变化')
+
+    const httpGetList = async () => {
+      let storeSeatList = await getMicSeatList()
+      let res = await getQueueList()
+      if (res && res.data) {
+        let waitList = res.data
+        storeSeatList.length && storeSeatList.forEach((e) => (e.isOpenMic = true))
+        if (waitList.length) {
+          waitList.forEach((e) => {
+            e.isOpenMic = false
+          })
+          // 过滤席位
+          waitList = waitList.filter((e) => {
+            return !storeSeatList.find((seat) => {
+              return e.uid === seat.uid
+            })
+          })
+        }
+
+        let newList = storeSeatList.concat(waitList)
+        newList.length &&
+        newList.forEach((item) => {
+          item.role = 'Member'
+          teacherList.length &&
+          teacherList.forEach((teacherItem) => {
+            if (String(item.uid) === String(teacherItem.userID)) {
+              item.role = teacherItem.role
+            }
+          })
+        })
+        console.log(newList, '123newList')
+        console.log(teacherList, 'teacherlist')
+        setList(newList)
+        setTotal(newList.length)
+      }
+    }
+
+    const subscription = getListSubject.pipe(
+      tap(val => console.log('=============trigger subject before debounce', val)),
+      debounceTime(200),
+      tap(val => console.log('=============trigger subject after debounce', val)),
+    ).subscribe( () => {
+      httpGetList()
+    })
+
+    return () => {
+      subscription && subscription.unsubscribe()
+    }
+
+  }, [setList, setTotal])
+
+  useEffect(() => {
+
+
     handleWatchEvent()
+
   }, [])
 
   useEffect(() => {
     if (String(activeKey) === BSYIM_TAB_WAITING) {
       getList()
-    }
+     }
   }, [activeKey])
 
   return (

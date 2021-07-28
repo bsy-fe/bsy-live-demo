@@ -1,4 +1,4 @@
-import { getSeatList } from '@/api/mic'
+import { getSeatList } from 'api/mic'
 import { RTC_INTERACTIVE_TYPE } from '@/consts/rtc'
 import { setSomething } from '../utils'
 

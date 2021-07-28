@@ -67,12 +67,12 @@ const RTCActBtn = (props) => {
       }
       
       {
-        QAVisible ? <PopUp onClose={() => setQAVisible(false)}>
+        QAVisible ? <PopUp container={config.container} onClose={() => setQAVisible(false)}>
           <ASK activeKey={BSYIM_TAB_ASK} style={{backgroundColor: '#0c0c0c'}} />
         </PopUp> : ''
       }
       {
-        actVisible ? <PopUp onClose={() => setActVisible(false)}>
+        actVisible ? <PopUp container={config.container} onClose={() => setActVisible(false)}>
           <Activity  style={{backgroundColor: '#0c0c0c'}}  />
         </PopUp> : ''
       }

@@ -16,10 +16,20 @@ const ns = className.bind(newStyles)
 
 
 const MessageItem = props => {
-  console.log('message item props::', props)
+  // console.log('message item props::', props)
   const { msg, userInfo, userMuteList, userRole, elementStyles } = props
   const { contentId } = getters()
-  const  [isNotify, hoverFunction, itemRole, eventType, changeUserMute, isImg, roleEnum, hanlderText,isMy,notifyMsg] = useMessageItem(props, ns, s)
+  const {
+    isNotify,
+    itemRole,
+    eventType,
+    isImg,
+    roleEnum,
+    hanlderText,
+    isMy,
+    notifyMsg
+  }
+    = useMessageItem({...props, ns, s})
 
   const [role] = useRole()
 
@@ -29,9 +39,9 @@ const MessageItem = props => {
     setIsStudent(Number(role) === 4)
   }, [role])
   
-  const mItemDefault = (
+  const pcItemDefault = (
     <div
-      className={`${s('msg-item')} ${isM ? s('msg-item-m') : ''} ${isImg ? s('msg-item-img') : ''} ${isMy ? s('self') : ''}`}
+      className={`${s('msg-item')} ${isImg ? s('msg-item-img') : ''} ${isMy ? s('self') : ''}`}
       onMouseOver={() => {
         // getPeopleDetail(msg, index)
         // console.log(msg, 'onMouseOver')
@@ -66,10 +76,6 @@ const MessageItem = props => {
                 {msg.nick || '佚名用户'}{msg.repeatMsgNames && msg.repeatMsgNames.length > 1 ? `等${msg.repeatMsgNames.length}人` : ''}
               </span>
               </span>
-
-              {(!isStudent &&
-            String(userRole) === '4') && !isMy ?
-            hoverFunction() : null}
             </div>
           <div className={s('text')}>
             {hanlderText(msg.payload)}
@@ -168,9 +174,6 @@ const MessageItem = props => {
             </span>
           </div>
         </div>
-          {(!isStudent &&
-            String(userRole) === '4') && !isMy ?
-            hoverFunction(msg, userInfo, userMuteList, changeUserMute) : null}
       </div>
       {
         msg.repeatMsgNum && msg.repeatMsgNum > 1 ? <div className={ns('repeat-num')}>x{msg.repeatMsgNum}</div> : null
@@ -181,7 +184,7 @@ const MessageItem = props => {
   )
 
 
-  const pcItem = isNotify(msg) ? pcNotify : mItemDefault
+  const pcItem = isNotify(msg) ? pcNotify : pcItemDefault
   const mItem = isNotify(msg) ? mNotify : newItem
 
   return isM ? mItem : pcItem

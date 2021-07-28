@@ -18,7 +18,17 @@ const MessageItem = props => {
   const { msg, userInfo, userMuteList, userRole, elementStyles, highLightRealMsg } = props
   const { contentId, isStudent } = getters()
   const numberUserRole = Number(userRole)
-  const  [isNotify, hoverFunction, itemRole, eventType, changeUserMute, isImg, roleEnum, hanlderText,isMy,notifyMsg] = useMessageItem(props, ns, s)
+  const  {isNotify, itemRole, eventType, changeUserMute, isImg, roleEnum, hanlderText,isMy,notifyMsg, muteHoverBtn, recallHoverBtn} = useMessageItem({...props, ns, s})
+
+  // 2021.7.23 用msg.isDrama判断是不是剧本直播
+  const hoverBtns = <div className={s('hover-wrapper')}>
+    {
+      !isMy && !isStudent && !msg.isDrama ? muteHoverBtn() : null
+    }
+    {
+      !isStudent && !msg.isDrama ? recallHoverBtn() : null
+    }
+    </div>
 
   const script = {
 
@@ -27,7 +37,7 @@ const MessageItem = props => {
     }
   }
   
-  const mItemDefault = (
+  const pcItemDefault = (
     <div
       className={`${s('msg-item')} ${isM ? s('msg-item-m') : ''} ${isImg ? s('msg-item-img') : ''} ${isMy ? s('self') : ''}`}
       onMouseOver={() => {
@@ -65,15 +75,15 @@ const MessageItem = props => {
               </span>
               </span>
 
-              {(!isStudent &&
-            numberUserRole === 4) && !isMy ?
-            hoverFunction() : null}
             </div>
           <div className={`${s('text')} ${script.isHighLight ? s('highlight') : ''}`}>
           
             {hanlderText(msg.payload)}
           </div>
         </div>
+        {
+          hoverBtns
+        }
       </div>
       {
         msg.repeatMsgNum && msg.repeatMsgNum > 1 ? <div className={ns('repeat-num')}>x{msg.repeatMsgNum}</div> : null
@@ -167,9 +177,6 @@ const MessageItem = props => {
             </span>
           </div>
         </div>
-          {(!isStudent &&
-            numberUserRole === 4) && !isMy ?
-            hoverFunction(msg, userInfo, userMuteList, changeUserMute) : null}
       </div>
       {
         msg.repeatMsgNum && msg.repeatMsgNum > 1 ? <div className={ns('repeat-num')}>x{msg.repeatMsgNum}</div> : null
@@ -180,7 +187,7 @@ const MessageItem = props => {
   )
 
 
-  const pcItem = isNotify(msg) ? pcNotify : mItemDefault
+  const pcItem = isNotify(msg) ? pcNotify : pcItemDefault
   const mItem = isNotify(msg) ? mNotify : newItem
 
   return isM ? mItem : pcItem

@@ -11,9 +11,6 @@ package-lock.json
 # production
 /build
 
-#ide
-/.idea
-
 # misc
 .DS_Store
 .idea
@@ -27,6 +24,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 yarn.lock
-package-lock.json
-
 .vscode/
+

@@ -113,6 +113,12 @@ const STATUS_ENUM = {
 
 const BSYIM_COLLAPSE_SAME_MESSAGE = 'BSYIM_COLLAPSE_SAME_MESSAGE'
 
+const DANMU_POSITIONS = {
+  CHAT: 1,
+  PLAYER: 2,
+  CHAT_AND_PLAYER: 3
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   SDKAPPID,
@@ -183,5 +189,6 @@ export {
   BSYIM_SPECIAL_MESSAGE_TYPE,
   BSYIM_INITIAL_MODE,
   QUESTION_ENUM,
-  STATUS_ENUM
+  STATUS_ENUM,
+  DANMU_POSITIONS
 }

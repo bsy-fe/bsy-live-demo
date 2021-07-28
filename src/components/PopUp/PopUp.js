@@ -25,8 +25,19 @@ const PopUp = ({onClose, container = document.body, ...props}) => {
       setPopUpHeight(imHeight)
     }
   } ,[container])
+
+  useEffect(() => {
+    let fn = () => {
+      onClose && onClose()
+    }
+    window.addEventListener('click', fn)
+    return () => {
+      window.removeEventListener('click', fn)
+    }
+  }, [])
+
   
-  return isM ? <div className={s.mBsyLivePopupWrapper} onClick={onClose}>
+  return isM ? <div className={s.mBsyLivePopupWrapper}>
     <div className={s.mBsyLivePopup} style={{height: popupHeight || '50vh'}} onClick={e => e && e.stopPropagation()}>
       <div className={s.closeBtn} onClick={onClose}>x</div>
       {

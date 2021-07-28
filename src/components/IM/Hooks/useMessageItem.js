@@ -1,12 +1,10 @@
 import React from 'react'
 import store from '@/store'
 import getters from '@/store/getters'
-import {handlerEmojiText, isJSONString, IsPC, isHKYClient, getUserDefinedFieldObj} from '@/utils'
-import { emojiMap, emojiUrl } from '@/utils/emojiMap'
-import { CUSTOM_MSG, IMG_PRELOAD, GROUP_EVENT_NOTIFY } from '@/consts'
+import {getUserDefinedFieldObj, handlerEmojiText, isHKYClient, IsPC} from '@/utils'
+import {emojiMap, emojiUrl} from '@/utils/emojiMap'
+import {CUSTOM_MSG, GROUP_EVENT_NOTIFY} from '@/consts'
 import {globalConst} from '@/consts/globalConst'
-import showPopUp from '@/components/PopUp/showPopUp'
-import {showLiveDialog} from '@/components/PopUp/showLiveDialog'
 import showImage from '@/components/ImgLoad/showImage'
 
 const isM = !IsPC()
@@ -45,6 +43,38 @@ export const roleEnum = {
   }
 }
 
+const changeUserMute = (uid, status) => {
+  const {contentId} = getters()
+
+  store
+    .dispatch({
+      type: 'message/changeUserMute',
+      payload: {
+        contentId,
+        uid,
+        status,
+        internal: true
+      }
+    })
+    .then(() => {
+      console.log('改变成功')
+    })
+}
+
+const recallMessage = (msg) => {
+  // store.dispatch.message.removeMessageBySeq(msg.sequence)
+  // store.
+  console.log('=============store', store)
+  const recallingMessage = store.getState().message.recallingMessage
+  if(recallingMessage) {
+    if(recallingMessage.indexOf(msg.sequence) < 0) {
+      recallingMessage.push(msg.sequence)
+    }
+  } else {
+    store.dispatch.message.updateRecallingMessage([msg.sequence])
+  }
+  return globalConst.client.recallMessage(msg)
+}
 
 const isNotify = msg => {
 
@@ -52,12 +82,40 @@ const isNotify = msg => {
   return userDefinedFieldObj.proto_name === GROUP_EVENT_NOTIFY
 }
 
-const useMessageItem = (props, ns, s) => {
-  const { msg, userInfo, userMuteList, userRole, elementStyles } = props
+const useMessageItem = ({ns, s, ...props}) => {
+  const {msg, userMuteList, userRole} = props
+
+  // const muteHoverBtn = useRef(null)
+
+  // const recallHoverBtn = /useRef(null)
+
+  const muteHoverBtn = () => {
+    const has = userMuteList && userMuteList.includes(msg.from)
+
+    return <div
+      className={s('hover-function')}
+      onClick={() => {
+        changeUserMute(msg.from, !has)
+      }}
+    >
+      {has ? '解除禁言' : '禁言'}
+    </div>
+  }
+
+  const recallHoverBtn = () => <div
+    className={s('hover-function')}
+    onClick={() => {
+      recallMessage(msg)
+    }}
+  >
+    撤回
+  </div>
+
+
   const hanlderImage = payload => {
     const data = JSON.parse(payload.data)
     // todo
-    const { ImageInfoArray } = data.content.MsgContent
+    const {ImageInfoArray} = data.content.MsgContent
     const item2 = ImageInfoArray.find(ele => ele.Type === 1)
     // const item3 = ImageInfoArray.find(ele => ele.Type === 3)
     const item = ImageInfoArray.find(ele => ele.Type === 3) || item2 || {}
@@ -113,20 +171,7 @@ const useMessageItem = (props, ns, s) => {
     )
   }
 
-  const hoverFunction = (msgProp, userInfoProp, memberList, changeUserMute) => {
-    let list = new Set(memberList)
-    const has = list.has(msgProp.from)
-    return (
-      <div
-        className={s('hover-function')}
-        onClick={() => {
-          changeUserMute(msgProp.from, !has)
-        }}
-      >
-        {has ? '解除禁言' : '禁言'}
-      </div>
-    )
-  }
+
 
   function hasImg(payload) {
     return payload.data && payload.data.includes(CUSTOM_MSG)
@@ -150,7 +195,7 @@ const useMessageItem = (props, ns, s) => {
                 <img
                   style={{ verticalAlign: 'middle' }}
                   src={emojiUrl + mapText}
-                  className={ns('emj-img')}
+                  className={`${s('emj-img')} ${ns('emj-img')}`}
                 />
               ) : (
                 text
@@ -162,22 +207,7 @@ const useMessageItem = (props, ns, s) => {
     )
   }
   const isImg = msg.payload.data && msg.payload.data.includes(CUSTOM_MSG)
-  const { contentId, isStudent } = getters()
-  const changeUserMute = (uid, status) => {
-    store
-      .dispatch({
-        type: 'message/changeUserMute',
-        payload: {
-          contentId,
-          uid,
-          status,
-          internal: true
-        }
-      })
-      .then(() => {
-        console.log('改变成功')
-      })
-  }
+
   const revokeMessage = message => {
     console.log(
       {
@@ -202,18 +232,15 @@ const useMessageItem = (props, ns, s) => {
       msg.repeatMsgNames
         .map(from => String(from))
         .indexOf(String(globalConst.client.buid)) > -1)
-  console.log('is my?:', msg.from, globalConst.client.buid, globalConst.client)
+  // console.log('is my?:', msg.from, globalConst.client.buid, globalConst.client)
   const itemRole = isMy ? roleEnum[5] : roleEnum[Number(userRole) || 4]
   const notifyMsg = getUserDefinedFieldObj(msg)
   const eventType = (notifyMsg.content && notifyMsg.content.event_type) || false
 
   // console.log(getUserDefinedFieldObj(msg), 'getUserDefinedFieldObj(msg)')
 
-  return [
+  return {
     isNotify,
-    function() {
-      return hoverFunction(msg, userInfo, userMuteList, changeUserMute)
-    },
     itemRole,
     eventType,
     changeUserMute,
@@ -221,8 +248,10 @@ const useMessageItem = (props, ns, s) => {
     roleEnum,
     hanlderText,
     isMy,
-    notifyMsg
-  ]
+    notifyMsg,
+    muteHoverBtn,
+    recallHoverBtn
+  }
 }
 
 export default useMessageItem

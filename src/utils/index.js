@@ -439,7 +439,7 @@ export const isUrl = url => {
 
 export const calcRepeatMessages = (messages, shouldCalc) => {
   if (!shouldCalc || !messages || !messages.length) {
-    console.log('foldMessage::', 'false', shouldCalc, messages)
+    // console.log('foldMessage::', 'false', shouldCalc, messages)
     return messages.map( msg => msg.repeatMsgNum > 1 ? {...msg, repeatMsgNum: 1, repeatMsgNames: []} : msg)
   }
 
@@ -466,7 +466,7 @@ export const calcRepeatMessages = (messages, shouldCalc) => {
     }
       // if(lastNewMessage && last)
   })
-  console.log('foldMessage::', {messages, shouldCalc, newList})
+  // console.log('foldMessage::', {messages, shouldCalc, newList})
 
   return newList
 }
@@ -503,6 +503,10 @@ export const BSYWarn = (...values) => console.warn('BSYLIVE:', ...values)
 
 export const checkAndWarnOpt = (opt) => {
 
+
+
+  let ret = true
+
   console.log(`
                 //////////////////////////////
                 /////欢迎使用bsylive demo//////
@@ -516,10 +520,25 @@ export const checkAndWarnOpt = (opt) => {
 
   if (!opt) {
     BSYWarn('opt未定义，请检查init函数传入参数')
-  } else {
-    // const  = opt
+    return false
   }
 
+  //    enterCode: "2411c01db53f4709a9d327c33ad4a984",
+  //     liveId: "live-846918736510976",
+  //     tenantId: "1130997662",
+  //     userId: 57986922,
+  //     userInfo: {nickname: "张零一", avatar: undefined, role: 2},
 
+  const keys = ['enterCode', 'liveId', 'tenantId', 'userId']
+
+  keys.forEach((key) => {
+    if(!opt[key]) {
+      BSYWarn(`未传入${key}`)
+      ret = false
+      // return false
+    }
+  })
+
+  return ret
 }
 

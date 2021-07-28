@@ -108,14 +108,16 @@ export default (props) => {
       // todo 获取登录失败
       console.log('=====getMyQueueStatus', err)
     })
-
-    client.on('removed-from-queue', () =>{
+    let removeFromQueueFn = null
+    removeFromQueueFn = client.on('removed-from-queue', () =>{
       message.error('您已被老师请出等候队列')
       setStatus(RAISE_HAND_STATUS.normal)
       RTCModeStore.actionBtnStatus = RAISE_HAND_STATUS.normal
     })
     return () => {
       // cleanup
+      client.on('removed-from-queue', removeFromQueueFn)
+      
     }
   }, [client])
 

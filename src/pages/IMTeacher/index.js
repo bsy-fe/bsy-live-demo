@@ -1,28 +1,28 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import classNames from 'classnames/bind'
-import { Tabs, Icon, Button } from 'antd'
+import {Tabs} from 'antd'
 import {
-  BSYIM_TAB_CLASSES,
-  BSYIM_TAB_CHAT,
-  BSYIM_TAB_ASK,
+  BSYIM_INITIAL_MODE,
   BSYIM_TAB_ACTIVITY,
+  BSYIM_TAB_ASK,
+  BSYIM_TAB_CHAT,
+  BSYIM_TAB_CLASSES,
+  BSYIM_TAB_GOODS,
   BSYIM_TAB_GROUP_ACTIVITY,
   BSYIM_TAB_LIVEGOODS,
-  BSYIM_TAB_GOODS,
-  BSYIM_INITIAL_MODE,
   BSYIM_TAB_WAITING
 } from '@/consts'
 import store from '@/store'
-import { RTC_INTERACTIVE_TYPE } from '@/consts/rtc'
-import InitialEntry from '@/components/IM/InitialEntry'
-import { IsPC, isHKYClient } from '@/utils'
+import {RTC_INTERACTIVE_TYPE} from '@/consts/rtc'
+import {isHKYClient, IsPC} from '@/utils'
 import {globalConst} from '@/consts/globalConst'
 import IMUtil from 'utils/IMUtil'
-import {defaultTeacherTabList as defaultTabList} from '@/consts/tabList'
+import {defaultPusherTabList, defaultTeacherTabList} from '@/consts/tabList'
 import Loading from '@/components/Loading'
+import InitialEntry from '../../components/IM/InitialEntry'
 import ChatRoom from './ChatRoom'
 import Ask from './Ask'
 import Activity from './Activity'
@@ -42,7 +42,7 @@ const s = classNames.bind(styles)
 class IMTeacher extends InitialEntry {
 
   state = {
-    tabPaneList: defaultTabList
+    tabPaneList: defaultTeacherTabList
   }
 
   constructor(props) {
@@ -52,9 +52,25 @@ class IMTeacher extends InitialEntry {
 
     this.initParams = props.config
 
+
   }
 
-  init(props){
+  updateTabList(role) {
+    console.log('=============role::', role)
+    if (Number(role) === 1) {
+      // 教师
+      this.setState({tabPaneList: defaultPusherTabList}, () => {
+        this.setTabs(defaultPusherTabList)
+      })
+
+    } else {
+      this.setState({tabPaneList: defaultTeacherTabList}, () => {
+        this.setTabs(defaultTeacherTabList)
+      })
+    }
+  }
+
+  init(props) {
     super.init(props)
     console.warn('=============imteacher init:::::', props)
 
@@ -167,15 +183,28 @@ class IMTeacher extends InitialEntry {
     }
   }
 
-  // componentDidMount() {
-  //   console.log(this.state.tabPaneList,'tabPaneList')
-  // }
+  componentDidMount() {
+    super.componentDidMount()
+
+    if (this.initParams.userInfo?.role) {
+      this.updateTabList(this.initParams.userInfo?.role)
+
+    }
+    // console.log(this.state.tabPaneList,'tabPaneList')
+  }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     super.componentDidUpdate(prevProps, prevState, snapshot)
-    if(prevProps.rtcInfo !== this.props.rtcInfo || prevProps.rtcInfo.interactType !== this.props.rtcInfo.interactType) {
+    if (prevProps.rtcInfo !== this.props.rtcInfo || prevProps.rtcInfo.interactType !== this.props.rtcInfo.interactType) {
       console.log('rtc info change:: ,', this.props.rtcInfo)
       this.rtcUpdateTableList(this.props.rtcInfo)
+    }
+
+    if (this.props.config?.userInfo?.role !== prevProps.config?.userInfo?.role) {
+      console.log('new role', this.props.config?.userInfo?.role, prevProps.config?.userInfo?.role)
+      this.updateTabList(this.props.config?.userInfo?.role)
+      // this.setState()
+      // this.init(this.props)
     }
   }
 

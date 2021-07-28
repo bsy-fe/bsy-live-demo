@@ -274,7 +274,7 @@ class InitialEntry extends Component {
     this.setState({
       activeKey: e
     })
-    const zanBox = document.querySelector('#zan-items-box')
+    const zanBox = document.querySelector('#bubble-wrapper')
     if (e === BSYIM_TAB_CHAT) {
       zanBox && (zanBox.style.display = 'block')
     } else {

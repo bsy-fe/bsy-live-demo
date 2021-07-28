@@ -233,9 +233,9 @@ const UseSendBox = (props, s) => {
       // setShowEmoji(!showEmoji)
     }
 
-    // if(!emojiStatus) {
-    //
-    // }
+    if(!emojiStatus) {
+
+    }
   }
   const inputSendMessage = () => {
     if (!sendBtnDisabled) {

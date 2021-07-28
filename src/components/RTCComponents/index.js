@@ -123,7 +123,13 @@ function useInitial(props) {
       },
       onOk: async () => {
         try {
-          await client.responseInvited(true, fromId)
+         const res = await client.responseInvited(true, fromId)
+          if(res && res.code === 1) {
+            // 成功
+            message.success('已接受邀请')
+          } else {
+            message.error(res ? res.msg : '服务器开小差了，请稍后再试')
+          }
         } catch (error) {
           message.error(error.data.msg || '服务器开小差了，请稍后再试')
         }
@@ -263,6 +269,8 @@ const RTCCom =  (props) => {
     selfOnline,
     handleClick
   } = useInitial(props)
+
+  console.log('=============props.liveStatus::', props.liveStatus)
   return (
     <>
     {

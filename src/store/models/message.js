@@ -1,14 +1,9 @@
 import { getUserMuteList, changeUserMute, getRoomInfo } from '@/api/user'
-import { message as messageTip } from 'antd'
+import {message as messageTip} from 'antd'
 
 import { IsPC, calcRepeatMessages } from '@/utils'
 
-
-import getters from '@/store/getters'
-
 const MAX_LENGTH = IsPC ? 1500 : 500
-
-
 
 export default {
   state: {
@@ -32,7 +27,9 @@ export default {
     elementStyles: [],
     isOpenMic: false,
     highLightRealMsg: false,
-    liveGoodsUrl: ''
+    liveGoodsUrl: '',
+    recallingMessage: [], // 删除中的消息
+    deletedMsgSeq: [] // 被删除的msgSeq
   },
   reducers: {
     setMessageList(state, payload) {
@@ -154,32 +151,75 @@ export default {
         messageList: [...messageList],
         foldedMessageList: [...foldedMessageList],
         selfSend: !!selfSend,
-        isNew: !isBottom
+        isNew: true
       }
     },
     addMessageList(state, payload) {
-      let {messageList, isBottom, foldSame } = state
-      let { messages } = payload
+      const {messageList, isBottom, foldSame } = state
+      let { list, selfSend } = payload
       const messageIdList = messageList.map(({ID}) => ID)
-      messages = messages.filter( msg => messageIdList.indexOf(msg.ID) < 0)
+      const messagesFiltered = list.filter( msg => messageIdList.indexOf(msg.ID) < 0)
       // const totalLength = messageList.length + messages.length
-      const hasSelf = messages.some(msg => !!msg.selfSend)
-      messageList = [...messageList, ...messages.map(msg => msg.message)]
-      if (messageList.length > MAX_LENGTH) {
-        messageList = messageList.slice(messageList.length - MAX_LENGTH)
+      // const hasSelf = messages.some(msg => !!msg.selfSend)
+      let newMessageList = [...messageList, ...messagesFiltered]
+      if (newMessageList.length > MAX_LENGTH) {
+        newMessageList = newMessageList.slice(-MAX_LENGTH)
       }
-
-      const foldedMessageList = calcRepeatMessages(messageList, foldSame)
+      //
+      const foldedMessageList = calcRepeatMessages(newMessageList, foldSame)
 
 
       return {
         ...state,
-        messageList,
+        messageList: newMessageList,
         foldedMessageList,
         isNew: !isBottom,
-        selfSend: hasSelf
+        selfSend
       }
 
+    },
+    removeMessageBySeq(state, payload) {
+      const sequenceToRemove = payload
+
+      const {foldSame, messageList, recallingMessage} = state
+
+      let newList = messageList
+
+      const indexToRemove = messageList.findIndex(msg => String(msg.sequence) === String(sequenceToRemove))
+
+      if(indexToRemove > -1) {
+        messageList.splice(indexToRemove, 1)
+        newList = messageList
+
+        const foldedMessageList = calcRepeatMessages(newList, foldSame)
+
+        const index = recallingMessage.indexOf(sequenceToRemove)
+        console.log('=============index to remove::', index)
+        console.log()
+        if(index > -1) {
+          recallingMessage.splice(index, 1)
+          messageTip.success('撤回成功')
+        }
+
+        return {
+          ...state,
+          messageList: newList,
+          foldedMessageList,
+          recallingMessage,
+          deletedMsgSeq: [sequenceToRemove]
+        }
+      }
+
+      return {
+        ...state
+      }
+    },
+    updateRecallingMessage(state, payload) {
+      // if(state.recallingMessage.indexOf(payload))
+      return {
+        ...state,
+        recallingMessage: payload
+      }
     },
     setSpecialMessage(state, payload) {
       return {
@@ -190,7 +230,7 @@ export default {
     setNewMessage(state, payload) {
       return {
         ...state,
-        isNew: payload.isNew
+        isNew: payload
       }
     },
     setAllMute(state, payload) {

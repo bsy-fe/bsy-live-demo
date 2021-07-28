@@ -6,6 +6,7 @@ import { filterComp } from '@/utils'
 import s from './index.module.styl'
 
 
+
 const cx = classNames.bind(s)
 
 
@@ -56,15 +57,41 @@ const useTeacher = (props) => {
   let { client } = useContext(GlobalContext)
   let [ visible, setVisible] = useState(false)
   let [ isPlayerSuccess, setPlayerSuccess] = useState(false)
+  const [videoDisabled, setVideoDisabled] = useState(false)
   const handleIsPlaying = (d) => {
     props.handleIsPlaying && props.handleIsPlaying(d)
   }
+
+  // 重置播放
+  const resetPlayer = () => {
+    document.querySelector('#teacher-video').innerHTML = ''
+    let isSuccess = playStream(client,  teacherUid.current)
+    setPlayerSuccess(isSuccess)
+  }
+
+  const requestStats = () => {
+    if(isPlayerSuccess && client.interactLive.rtc) {
+      const videoMuted = client.interactLive.rtc.isVideoMuted(teacherUid.current)
+      console.log('=============video muted::', videoMuted)
+      setVideoDisabled(videoMuted)
+      // client.interactLiveController.instance.rtc.getRemoteVideoStats().then( stats => {
+      //   console.log('=============stats::', stats)
+      //   if(!stats[teacherUid.current] || !stats[teacherUid.current].MuteState) {
+      //       timer(1000).subscribe(() => {
+      //         requestStats()
+      //       })
+      //   }
+      // })
+    }
+  }
+
 
   // 播放按钮
   const handlePlay = () => {
     console.log('=====handlePlay')
     playClickRef.current = true
     let isSuccess = playStream(client, teacherUid.current)
+    console.log('=====setPlayerSuccess', isSuccess)
     setPlayerSuccess(isSuccess)
     setVisible(false)
     handleIsPlaying(true)
@@ -74,48 +101,87 @@ const useTeacher = (props) => {
     console.log('=====teacherOnline', client, data, playClickRef.current)
     teacherUid.current = data.uid
     if (playClickRef.current) {
-      document.querySelector('#teacher-video').innerHTML = ''
-      let isSuccess = playStream(client, data.uid)
-      setPlayerSuccess(isSuccess)
+      resetPlayer()
       handleIsPlaying(true)
     } else {
-      // teacherUid
       setVisible(true)
       handleIsPlaying(false)
     }
+    requestStats()
   }
 
   const teacherOffline = () => {
+    setVideoDisabled(false)
     document.querySelector('#teacher-video').innerHTML = ''
+  }
+
+  const checkTeacherDisableVideo = (event) => {
+    console.log('=============checkTeacherDisableVideo event::', event, teacherUid.current)
+    if(String(event.uid) === String(teacherUid.current)) {
+      // 是当前老师把自己的视频流关闭了
+      setVideoDisabled(true)
+    }
+  }
+
+  const checkTeacherEnableVideo = (event) => {
+    console.log('=============checkTeacherEnableVideo event::', event, teacherUid.current)
+    if(String(event.uid) === String(teacherUid.current)) {
+      // 是当前老师把自己的视频流打开了
+      setVideoDisabled(false)
+      let videoDom = document.querySelector('#teacher-video').querySelector('video')
+      if (videoDom && videoDom.style.display === 'none') {
+        setTimeout(() => {
+          videoDom.style.display = 'block'
+        }, 3000)
+      }
+    }
   }
 
   useEffect(() => {
     let teacherOnlineFn = null
     let teacherOfflineFn = null
-    client.on('teacher-online', teacherOnline)
-    client.on('teacher-offline', teacherOffline)
+    let checkTeacherDisableVideoFn = null
+    let checkTeacherEnableVideoFn = null
+    teacherOnlineFn = client.on('teacher-online', teacherOnline)
+    teacherOfflineFn = client.on('teacher-offline', teacherOffline)
+    checkTeacherDisableVideoFn = client.on('user-video-disabled', checkTeacherDisableVideo)
+    checkTeacherEnableVideoFn = client.on('user-video-enabled', checkTeacherEnableVideo)
+
     return () => {
       // cleanup
       client.off('teacher-online', teacherOnlineFn)
       client.off('teacher-offline', teacherOfflineFn)
+      client.off('user-video-disabled', checkTeacherDisableVideoFn)
+      client.off('user-video-enabled', checkTeacherEnableVideoFn)
+
     }
   }, [client])
 
   useEffect(() => {
     if (props.liveStatus === 'finished') {
+      setVideoDisabled(false)
       document.querySelector('#teacher-video').innerHTML = ''
     }
   }, [props.liveStatus])
 
+
+  useEffect(() => {
+    console.log('=============change ::', isPlayerSuccess, client.interactLive)
+    requestStats()
+
+  }, [isPlayerSuccess, client.interactLive])
+
+
   return {
     visible,
     isPlayerSuccess,
-    handlePlay
+    handlePlay,
+    videoDisabled
   }
 }
 
 export const Teacher = (props) => {
-  let {visible, handlePlay} = useTeacher(props)
+  let {visible, handlePlay, videoDisabled} = useTeacher(props)
 
   return (
     <div className={cx('rtc-teacher-container')} style={props.style}>
@@ -128,13 +194,16 @@ export const Teacher = (props) => {
         )
       }
       <div id="teacher-video" className={cx('teacher-video-wrap')}></div>
+      {
+        videoDisabled && !visible ? <div className={cx('teacher-video-disabled')} /> : null
+      }
     </div>
   )
 }
 
 
 export const MTeacher = (props) =>{ 
-  let {visible, handlePlay, isPlayerSuccess} = useTeacher(props)
+  let {visible, handlePlay, isPlayerSuccess, videoDisabled} = useTeacher(props)
   console.log('=====MTeacher', visible )
   return (
     <div className={cx('m-rtc-teacher-container')} style={props.style}>
@@ -152,10 +221,12 @@ export const MTeacher = (props) =>{
             </div>
           ) : ''
         }
-        
       </div>
+      {
+       ( props.interact && videoDisabled && !visible) ? <div className={cx('m-teacher-video-disabled')} /> : null
+      }
     </div>
   )
 }
 
-export default filterComp(Teacher, MTeacher)
+export default filterComp((Teacher), (MTeacher))

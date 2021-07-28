@@ -1,0 +1,85 @@
+
+@bubbleTime: 1.5s;
+
+@maxNum: 12;
+
+@bubbleSize: 20px;
+
+//@numList: ;
+
+.bubble{
+  position: absolute;
+  left: 0;
+  bottom:0;
+  background-image: url(//img.kaikeba.com/20945142400202yarm.png);
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  width: @bubbleSize;
+  height: @bubbleSize;
+  opacity: 0;
+}
+
+.bl(@time) {
+  .bl-@{time} {
+    animation:e('bubble-basic @{bubbleTime} linear 1 forwards, bubble-@{time} @{bubbleTime} linear 1 forwards');
+    background-position-y: -@bubbleSize*(@time - 1);
+  }
+}
+
+.bubbleLoop(@index) when(@index <= @maxNum) {
+  .bl(@index);
+  .bubbleLoop(@index+1);
+}
+
+.bubbleLoop(1);
+
+
+@keyframes bubble-basic {
+  0% {
+    margin-bottom:0;
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    margin-bottom:160px;
+    opacity: 0;
+  }
+}
+
+.kfLoop(@index) when(@index <= @maxNum) {
+
+  @keyframeName: e('bubble-@{index}');
+
+  @neg: if((round(@index)/2 > floor(round(@index)/2)), 1, -1);
+
+  @margin: @neg*4*round(@index);
+
+  @largeMargin: -@neg*2*round(@index);
+
+  @negMargin: @neg*4*round(@index);
+
+  @negLargeMargin: -@neg*@negMargin;
+
+  @keyframes @keyframeName{
+    0% {
+    }
+    25% {
+      transform:e('translate3d(@{margin}px, 0, 0)');
+    }
+    40% {
+      transform: e('translate3d(@{negMargin}px, 0, 0)');
+    }
+    70% {
+      transform:  e('translate3d(@{largeMargin}px, 0, 0)');
+    }
+    100% {
+      transform: e('translate3d(@{negLargeMargin}px, 0, 0)');
+    }
+  }
+
+  .kfLoop(@index+1);
+}
+
+.kfLoop(1);

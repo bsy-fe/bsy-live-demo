@@ -54,7 +54,8 @@ const mapStateToProps = state => ({
   userInfo: state.user.userInfo,
   isNew: state.message.isNew,
   isMute: state.user.isMute,
-  foldSame: state.message.foldSame
+  foldSame: state.message.foldSame,
+  deletedMsgSeq: state.message.deletedMsgSeq
 })
 
 export default connect(mapStateToProps)(MSGList)

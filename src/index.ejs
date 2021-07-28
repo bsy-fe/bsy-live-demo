@@ -2,7 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui,viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title></title>
     <style>
@@ -47,11 +51,11 @@
     return null
   }
   let enterParams = {
-    enterCode: "b7a07f6f2d564f2c99d539be7d28ac91",
-liveId: "live-848716751798272",
-    tenantId: "20123",
-    userId: 10037628,
-    userInfo: {nickname: "xxxx-xxxx", avatar: "", role: 4},
+    enterCode: "9008504f46d64b5bbcddb83278efbdae",
+    liveId: "live-853208866062336",
+    tenantId: 9292903890,
+    userId: 66160276,
+    userInfo: {nickname: "助教8999", avatar: undefined, role: 2},
     container: document.getElementById('root'),
   }
   if(gqs('liveId')) {
@@ -67,7 +71,7 @@ liveId: "live-848716751798272",
   }
   // tenantId=2027176802&enterCode=eee95809e2c14584885e233378bfca77&userId=9545210&liveId=live-848415022481408&nickname=ABC10&role=4
   // 20123&enterCode=6d934a4022e34a458681a981f682c8b5&userId=57608602&liveId=live-848413962895360&nickname=%E5%BC%A0%E5%8D%8B610&role=4
-  const sdk = new Liveroom({...enterParams})
+  const sdk = new Liveroom({container: document.getElementById('root')})
 </script>
 </body>
 </html>

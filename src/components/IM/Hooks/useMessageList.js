@@ -6,15 +6,13 @@ import getters from '@/store/getters'
 import {Subject} from 'rxjs'
 import {throttleTime} from 'rxjs/operators'
 import {globalConst} from '@/consts/globalConst'
-
-
+import IMUtils from '@/utils/IMUtil'
 
 
 const MAX_VISIBLE_LIST = IsPC ? 200 : 100
 
 let shouldBottom = true
 
-let historyLoading = false
 
 let toBottomBeforeLoadHistory = 0
 
@@ -26,16 +24,23 @@ const onTopEvent = new Subject()
 
 let onTopSubscription = null
 
+const listSize = 20
+
 const useMessageList = props => {
   const {
     foldedMessageList,
     onScrollTop,
-    teacherList
+    teacherList,
+    deletedMsgSeq
   } = props
   const {contentId, isStudent} = getters()
   const [visibleList, setVisibleList] = useState([])
   const [scrollEvent, setScrollEvent] = useState(null)
   const [handleTopEvent, setHandleTopEvent] = useState(null)
+  const [nextReqID, setNextReqID] = useState(null)
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyCompleted, setHistoryCompleted] = useState(false)
+
   const initScroll = useRef()
   let msgWrapperRef = useRef()
 
@@ -85,13 +90,14 @@ const useMessageList = props => {
     return setVisibleList(foldedMessageList.slice(-MAX_VISIBLE_LIST))
   }
 
-  const HistoryLoaded = () => {
+  const setHistoryIsLoading = () => {
     // console.log(messageList, visibleList)
-    historyLoading = true
+    setHistoryLoading(true)
+    // historyLoading = true
   }
 
   const addNewHistory = () => {
-    HistoryLoaded()
+    setHistoryIsLoading()
     const loadStartIndex = foldedMessageList.indexOf(visibleList[0])
 
     let newVisibleList = []
@@ -116,24 +122,50 @@ const useMessageList = props => {
     refreshVisibleList()
   }
 
+  const getMessageList = async () => {
+    // const params = {count: listSize}
+    // if(nextReqID) {
+    //   params.nextReqMessageID = nextReqID
+    // }
+    try {
+      setHistoryIsLoading()
+
+      const res = await IMUtils.getMessageList(listSize, nextReqID)
+
+      console.log('=============historyList::', res)
+      const {list, nextReqMessageID} = res
+
+      setNextReqID(nextReqMessageID)
+
+      list && store.dispatch.message.addHistoryMessageList({
+        historyMessageList: list
+      })
+
+      if (list && list.length < listSize) {
+        // completed
+
+        setHistoryCompleted(true)
+      }
+
+      // if(nextReqMessageID) {
+      //
+      // }
+      return list
+    } catch (e) {
+      console.warn('=============get message error', e)
+      throw e
+    }
+
+// console.log(data, '++++++++++')
+// console.log('设置成功onSDKReady', data)
+  }
+
   const onTopHandler = (e) => {
     // console.log('onTopEvent:::', e, this, props, visibleList)
-    if(e) {
+    if (e) {
       toBottomBeforeLoadHistory = e.target.scrollHeight
       if (foldedMessageList[0] !== visibleList[0]) {
         addNewHistory()
-      } else {
-        try {
-          onScrollTop().then(res => {
-            console.log('获取上面的消息结果', res)
-            if (res) {
-              HistoryLoaded()
-            }
-          })
-          // loading
-        } catch (err) {
-          console.error(err)
-        }
       }
     }
 
@@ -145,7 +177,6 @@ const useMessageList = props => {
   
     setScrollEvent(e)
   }
-
 
 
   useEffect(() => {
@@ -171,12 +202,15 @@ const useMessageList = props => {
 
       msgWrapper.addEventListener('scroll', onScroll)
       scrollToBottom()
+
+      globalConst.client.on('im-ready', () => getMessageList())
+
       return () => {
         if (scrollSubscription) {
           scrollSubscription.unsubscribe()
           scrollSubscription = null
         }
-        msgWrapper.removeEventListener('scroll', onScroll)
+        // msgWrapper.removeEventListener('scroll', onScroll)
       }
 
 
@@ -214,7 +248,7 @@ const useMessageList = props => {
       shouldBottom = false
     }
 
-    if (onScrollTop && e.target.scrollTop <= 0 && e.target.scrollHeight > e.target.clientHeight) {
+    if (onScrollTop && e.target.scrollTop <= 32 && e.target.scrollHeight > e.target.clientHeight) {
       // console.log('on top now', messageList, visibleList)
       onTopEvent.next(e)
     }
@@ -246,20 +280,37 @@ const useMessageList = props => {
     }
   }, [foldedMessageList])
 
+
   useEffect(() => {
-    // console.log('visibleList change', visibleList)
+    console.log('visibleList change', {visibleList, historyLoading, shouldBottom})
 
     if (historyLoading) {
-      msgWrapperRef.current.scrollTop = msgWrapperRef.current.scrollHeight - toBottomBeforeLoadHistory
-      historyLoading = false
+      msgWrapperRef.current.scrollTop = msgWrapperRef.current.scrollHeight - toBottomBeforeLoadHistory + 32
+      setHistoryLoading(false)
+      // historyLoading = false
     } else if (shouldBottom) {
       scrollToBottom()
     }
   }, [visibleList])
 
-  return [visibleList, msgWrapperRef, hasNew, resolveNewMessage]
-}
 
+  useEffect(() => {
+    if(deletedMsgSeq && deletedMsgSeq.length) {
+      let newList = [...visibleList]
+      deletedMsgSeq.forEach((msgSeq) => {
+        const deletedIndex = visibleList.findIndex(msg => String(msg.sequence) === String(msgSeq))
+        if(deletedIndex > -1) {
+          newList.splice(deletedIndex, 1)
+        }
+      })
+
+      setVisibleList(newList)
+    }
+
+  }, [deletedMsgSeq])
+
+  return [visibleList, msgWrapperRef, hasNew, resolveNewMessage, getMessageList, historyCompleted, historyLoading]
+}
 
 
 export default useMessageList
