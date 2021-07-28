@@ -16,11 +16,14 @@ npm install
 npm run dev
 ```
 
+### 本地测试方式
+
 ### 项目构建
 
 ```
 npm run build
 ```
+
 
 ### 修改主题色
 
