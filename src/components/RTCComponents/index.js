@@ -5,7 +5,6 @@ import React, { useState, useContext, useEffect } from 'react'
 import { IsPC, filterComp } from '@/utils'
 import { GlobalContext } from '@/context'
 import {  RTC_INTERACTIVE_TYPE }from '@/consts/rtc'
-import ColumnGroup from 'antd/lib/table/ColumnGroup'
 import ActionBtn from './ActionBtn'
 import Panel from './Panel'
 import { 

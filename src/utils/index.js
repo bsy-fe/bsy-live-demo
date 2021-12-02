@@ -495,17 +495,13 @@ export const getLiveHeight = (container, ratio = playerRatio) => {
 
 export const getRtcImHeight = (container) => {
   let {imHeight} = getLiveHeight(container)
-  return `calc(${imHeight}px - 18vw)`
+  return `calc(${imHeight}px - 19vw)`
 }
 
 export const BSYWarn = (...values) => console.warn('BSYLIVE:', ...values)
 
 
 export const checkAndWarnOpt = (opt) => {
-
-
-
-  let ret = true
 
   console.log(`
                 //////////////////////////////
@@ -520,25 +516,44 @@ export const checkAndWarnOpt = (opt) => {
 
   if (!opt) {
     BSYWarn('opt未定义，请检查init函数传入参数')
-    return false
+  } else {
+    // const  = opt
   }
 
-  //    enterCode: "2411c01db53f4709a9d327c33ad4a984",
-  //     liveId: "live-846918736510976",
-  //     tenantId: "1130997662",
-  //     userId: 57986922,
-  //     userInfo: {nickname: "张零一", avatar: undefined, role: 2},
 
-  const keys = ['enterCode', 'liveId', 'tenantId', 'userId']
-
-  keys.forEach((key) => {
-    if(!opt[key]) {
-      BSYWarn(`未传入${key}`)
-      ret = false
-      // return false
-    }
-  })
-
-  return ret
 }
 
+
+let connectInstance = null
+
+async function checkAndInitConnect() {
+  if(!connectInstance) {
+    if(!window.BSYNativeConnect) {
+      await loadJs('https://test-res.baoshiyun.com/sdk/bsynativeconnect.min.js')
+    }
+
+    if (window.BSYNativeConnect) {
+      connectInstance = window.BSYNativeConnect.init()
+    }
+  }
+}
+
+export const sendMessageToClient = async (type, content) => {
+
+  await checkAndInitConnect()
+
+  if(connectInstance) {
+    connectInstance.invoke(type, content)
+  }
+  /*
+  if(isHKYClient()) {
+    if(window.remote_object) {
+      window.remote_object.invoke(type, content)
+    }
+
+    if(window.BSYTeacher) {
+      window.BSYTeacher.invokeMethod(type, content)
+    }
+
+  } */
+}

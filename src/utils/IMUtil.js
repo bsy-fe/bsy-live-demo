@@ -4,7 +4,7 @@ eslint-disable camelcase
 
 import React from 'react'
 import store from '@/store'
-import {getUserDefinedFieldObj, isHKYClient, IsPC} from '@/utils'
+import {getUserDefinedFieldObj, isHKYClient, IsPC, sendMessageToClient, BSYWarn} from '@/utils'
 import getters from '@/store/getters'
 import {message as messagetip} from 'antd'
 import {interval, timer} from 'rxjs'
@@ -24,8 +24,9 @@ import {activityMessageBuffer, chatMessageBuffer} from '@/utils/messageBuffer'
 import {globalConst} from '@/consts/globalConst'
 // import {AskPageEventEmitter} from '@/pages/IM/AskWrapper/consts'
 import {showLiveDialog} from '@/components/PopUp/showLiveDialog'
-import {ActivityEventEmitter, AskPageEventEmitter, WhiteBoardRefresh} from '@/consts/subjects'
+import {ActivityEventEmitter, AskPageEventEmitter} from '@/consts/subjects'
 import {BARRAGE} from './barrageStyle'
+
 
 
 // window.setInterval(() => {
@@ -278,13 +279,16 @@ class IMUtilsClass {
     })
 
     this.client.on('activity-received', data => {
-      console.log('get activity should pop window', data)
+      const {role} = getters()
+      if(role === 4) {
+        console.log('get activity should pop window', data)
 
-      const {web_action_url, mobile_action_url} = data.params
-      const showUrl = IsPC() ? web_action_url : mobile_action_url
-      const iframe = <iframe src={showUrl} frameBorder="0" style={{width: '100%', height: '100%'}}/>
+        const {web_action_url, mobile_action_url} = data.params
+        const showUrl = IsPC() ? web_action_url : mobile_action_url
+        const iframe = <iframe src={showUrl} frameBorder="0" style={{width: '100%', height: '100%'}}/>
 
-      showLiveDialog({children: iframe})
+        showLiveDialog({children: iframe})
+      }
       ActivityEventEmitter.next(true)
     })
 
@@ -330,6 +334,18 @@ class IMUtilsClass {
     this.client.on('message-recalled', (event) => {
       // "{"account_id":"10013801","msg_seq":592271}}"
       store.dispatch.message.removeMessageBySeq(event.msg_seq)
+    })
+
+    this.client.on('group-custom-message', event => {
+      // console.log('=============event', event)
+      BSYWarn(`收到群组自定义消息:${JSON.stringify(event)}`)
+      // messagetip.success(`收到群组自定义消息:${JSON.stringify(event)}`)
+    })
+
+    this.client.on('person-custom-message', event => {
+      // console.log('=============event', event)
+      BSYWarn(`收到个人自定义消息:${JSON.stringify(event)}`)
+      // messagetip.success(`收到个人自定义消息:${JSON.stringify(event)}`)
     })
 
   }
@@ -459,7 +475,7 @@ class IMUtilsClass {
   onSDKError = event => {
     console.log('SDK错误', event, this)
     if (event.data.code === 2999) {
-      messagetip.success('系统即将重连···', 1)
+      messagetip.success('消息发送失败，请重新进入直播间', 1)
       // setTimeout(() => {
       //   window.location.reload()
       // }, 1000)
@@ -529,7 +545,7 @@ class IMUtilsClass {
     }
   }
 
-  sendMessage = (chatRoomID, msg, retry = false) => {
+  sendMessage = (chatRoomID, msg, customData, retry = false) => {
     console.log('user send 行为', chatRoomID, msg, store.getState())
     // console.log('getGroupProfile 开始')
 
@@ -537,9 +553,10 @@ class IMUtilsClass {
       if(store.getState().message.userMute) {
         throw new Error('被单独禁言了')
       }
-      this.client.sendMessage(msg).then(
+      this.client.sendMessage(msg, customData).then(
           res => {
             if (!res.code) {
+
               console.log('发送成功了', res.data.message)
               resolve(res.data.message)
             }
@@ -575,7 +592,7 @@ class IMUtilsClass {
   }
 
 
-  sendCustomImage(files) {
+  sendCustomImage(files, customPayloadData) {
     // 图片格式。JPG = 1，GIF = 2，PNG = 3，BMP = 4，其他 = 255
     // arr
     /**
@@ -595,11 +612,15 @@ class IMUtilsClass {
     //   }
     // })
 
-    return this.client.sendImageMessage(files)
+    return this.client.sendImageMessage(files, customPayloadData)
   }
 
   sendCustomMessage(obj) {
     return this.client.sendCustomMessage(obj)
+  }
+
+  sendGroupCustomMessage(msg) {
+    return this.client.sendGroupCustomMessage(msg)
   }
 
 
@@ -706,12 +727,13 @@ class IMUtilsClass {
     const {web_action_url, mobile_action_url} = data
     const showUrl = IsPC() ? web_action_url : mobile_action_url
 
-    if (isHKYClient() && window.remote_object) {
-      window.remote_object.invoke('open_view', JSON.stringify({
+    if (isHKYClient()) {
+      sendMessageToClient('open_view', JSON.stringify({
         url: showUrl,
         width: 480,
         height: 550
       }))
+      // window.remote_object.invoke()
     } else {
       const iframe = <iframe src={showUrl} frameBorder="0" style={{width: '100%', height: '100%'}}/>
       showLiveDialog({children: iframe})

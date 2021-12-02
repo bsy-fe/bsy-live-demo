@@ -1,28 +1,92 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta
             name="viewport"
             content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui,viewport-fit=cover"
     />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title></title>
     <style>
         * {
             padding: 0;
             margin: 0;
         }
+
         html,
         body {
             width: 100%;
             height: 100%;
         }
+
         #root {
             width: 100%;
             height: 100%;
         }
+
+
+        #info-form-wrapper {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fafafa;
+
+            transform: translate3d(0, 0, 0);
+            transition: transform .3s;
+        }
+
+        #info-form-wrapper.hide {
+             transform: translate3d(0, 100%, 0);
+             display: none;
+         }
+
+        #info-form {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+
+        #info-form-wrapper .form-item {
+            margin-bottom: 12px;
+            line-height: 32px;
+            display: flex;
+        }
+
+        #info-form-wrapper .form-label {
+            flex: 1 0 100px;
+            text-align: right;
+        }
+        #info-form-wrapper .form-label:after {
+             content: '：'
+        }
+
+        #info-form-wrapper .form-label.no-colon:after {
+             content: ''
+        }
+
+        #info-form-wrapper .form-input {
+            flex: 1 0 240px;
+        }
+
+        #info-form-wrapper input {
+            width: 100%;
+            height: 32px;
+            padding: 4px 12px;
+            border: 1px solid #1a1a1a;
+            border-radius: 4px;
+
+            transition: border-color .2s;
+        }
+        #info-form-wrapper input:focus {
+             border-color: #0A62E1;
+         }
     </style>
     <!-- <script src="http://127.0.0.1:3090/bsylive.min.js"></script> -->
     <% for (var js in htmlWebpackPlugin.options.files.js) { %>
@@ -41,7 +105,30 @@
 
 <body>
 <div id="root"></div>
+<main id="info-form-wrapper">
+    <section id="info-form">
+        <div class="form-item" id="enter-live">
+            <span class="form-label no-colon"></span>
+            <span class="form-input">
+                <button id="enter-live-btn">进入直播间</button>
+            </span>
+        </div>
+    </section>
+</main>
 <script>
+  const getUUID = () => {
+    var d = new Date().getTime()
+    if (window.performance && typeof window.performance.now === 'function') {
+      d += performance.now() // use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (d + Math.random() * 16) % 16 | 0
+      d = Math.floor(d / 16)
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16)
+    })
+    return uuid
+  }
+
   const gqs = (name, search) => {
     const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
     const r = (search || window.location.search).substr(1).match(reg)
@@ -51,27 +138,127 @@
     return null
   }
   let enterParams = {
-    enterCode: "9008504f46d64b5bbcddb83278efbdae",
-    liveId: "live-853208866062336",
-    tenantId: 9292903890,
-    userId: 66160276,
-    userInfo: {nickname: "助教8999", avatar: undefined, role: 2},
     container: document.getElementById('root'),
+    enterCode: "0dc33dc219b1447f8caeb63734ac8c69",
+    liveId: "live-857732236804096",
+    tenantId: 7117726250,
+    userId: 57692853,
+    userInfo: {nickname: 'yyyyy', avatar: 'https://res-qn.baoshiyun.com/a/55818180901202jfwi.png', role: 4},
+    customStaticData: 'test customStaticData for sdk'
   }
-  if(gqs('liveId')) {
+  if (gqs('liveId')) {
     enterParams = {
       enterCode: gqs('enterCode'),
       liveId: gqs('liveId'),
       tenantId: gqs('tenantId'),
-      userId: gqs('userId') || undefined,
-      userInfo: {nickname: gqs('nickname'), avatar: "", role: gqs('role')},
+      userId: gqs('userId') || getUUID(),
+      userInfo: {nickname: gqs('nickname'), avatar: gqs('avatar'), role: gqs('role')},
       container: document.getElementById('root'),
-      platform: gqs('platform')
+      platform: gqs('platform'),
+      customStaticData: gqs('customStaticData') || 'test customStaticData for sdk'
     }
   }
+
+  const keys = [
+    'enterCode',
+    'liveId',
+    'tenantId',
+    'userId',
+    'nickname',
+    'avatar',
+    'role',
+    'platform'
+  ]
+
+  const formFragment = document.createDocumentFragment()
+
+  let values = {}
+
+
+  const paramsTemplate = {
+    enterCode: null,
+    liveId: null,
+    tenantId:null,
+    userId: null,
+    userInfo: {nickname: null, avatar: null, role: null},
+    container: document.getElementById('root'),
+    platform: null,
+    customStaticData: null
+  }
+
+  const setParam = (inputKey, value, object = paramsTemplate) => {
+    return Object.keys(object).some( key => {
+      if(key === inputKey) {
+        object[key] = value
+        return true
+      }
+
+      if(object[key] && typeof object[key] === 'object') {
+        return setParam(inputKey, value, object[key])
+      }
+    })
+  }
+
+  let formRender = (key) => {
+    const newFormItem = document.createElement('label')
+    newFormItem.className = 'form-item'
+    const newLabel = document.createElement('span')
+    newLabel.className = 'form-label'
+    newLabel.innerText = key
+    const newInputWrapper = document.createElement('span')
+    newInputWrapper.className = 'form-input'
+    const newInput = document.createElement('input')
+    newInput.type = 'text'
+    newInput.name = key
+    newInput.addEventListener('input', e => {
+      console.log('=============change::', key, e.target.value)
+      if(Number(e.target.value)) {
+        values[key] = Number(e.target.value)
+      }
+      console.log('=============values::', values)
+    })
+    if (gqs(key)) {
+      newInput.value = gqs(key)
+      values[key] = newInput.value
+    }
+    newInputWrapper.appendChild(newInput)
+
+    newFormItem.appendChild(newLabel)
+    newFormItem.appendChild(newInputWrapper)
+    // <label class="form-item"><span class="form-label"></span><span class="form-input"><input type="text"></span></label>
+    formFragment.appendChild(newFormItem)
+
+  }
+
+  keys.forEach(formRender)
+
+  const btnWrapper = document.querySelector('#enter-live')
+
+  const btnNode = document.querySelector('#enter-live-btn')
+
+  document.querySelector('#info-form').insertBefore(formFragment, btnWrapper)
+
+
+  btnNode.addEventListener('click', () => {
+    console.log('=============values::', values)
+    Object.keys(values).forEach(key => {
+      setParam(key, values[key])
+    })
+
+    console.log('=============params::', paramsTemplate)
+
+    const formWrapper = document.querySelector('#info-form-wrapper')
+
+    formWrapper.className = `${formWrapper.className} hide`
+
+    const sdk = new Liveroom({...paramsTemplate})
+
+
+  })
+
   // tenantId=2027176802&enterCode=eee95809e2c14584885e233378bfca77&userId=9545210&liveId=live-848415022481408&nickname=ABC10&role=4
   // 20123&enterCode=6d934a4022e34a458681a981f682c8b5&userId=57608602&liveId=live-848413962895360&nickname=%E5%BC%A0%E5%8D%8B610&role=4
-  const sdk = new Liveroom({container: document.getElementById('root')})
+  // const sdk = new Liveroom({...enterParams})
 </script>
 </body>
 </html>

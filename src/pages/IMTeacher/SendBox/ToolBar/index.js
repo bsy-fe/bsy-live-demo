@@ -48,7 +48,4 @@ const ToolBar = props => {
     </div>
   )
 }
-const mapStateToProps = state => ({
-  role: state.user.role
-})
-export default connect(mapStateToProps)(ToolBar)
+export default ToolBar

@@ -1,7 +1,7 @@
 import React from 'react'
 import store from '@/store'
 import getters from '@/store/getters'
-import {getUserDefinedFieldObj, handlerEmojiText, isHKYClient, IsPC} from '@/utils'
+import {getUserDefinedFieldObj, handlerEmojiText, isHKYClient, IsPC, sendMessageToClient} from '@/utils'
 import {emojiMap, emojiUrl} from '@/utils/emojiMap'
 import {CUSTOM_MSG, GROUP_EVENT_NOTIFY} from '@/consts'
 import {globalConst} from '@/consts/globalConst'
@@ -136,8 +136,8 @@ const useMessageItem = ({ns, s, ...props}) => {
       <div
         className={s('img')}
         onClick={() => {
-          if (isHKYClient() && window.remote_object) {
-            window.remote_object.invoke(
+          if (isHKYClient()) {
+            sendMessageToClient(
               'open_image',
               JSON.stringify({
                 url: item2.URL,

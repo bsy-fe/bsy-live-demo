@@ -9,7 +9,7 @@ import {globalConst} from '@/consts/globalConst'
 import IMUtils from '@/utils/IMUtil'
 
 
-const MAX_VISIBLE_LIST = IsPC ? 200 : 100
+const MAX_VISIBLE_LIST = IsPC ? 100 : 50
 
 let shouldBottom = true
 
@@ -31,7 +31,7 @@ const useMessageList = props => {
     foldedMessageList,
     onScrollTop,
     teacherList,
-    deletedMsgSeq
+    deletedMsgSeq,
   } = props
   const {contentId, isStudent} = getters()
   const [visibleList, setVisibleList] = useState([])
@@ -132,7 +132,7 @@ const useMessageList = props => {
 
       const res = await IMUtils.getMessageList(listSize, nextReqID)
 
-      console.log('=============historyList::', res)
+      // BSYWarn('=============historyList::', res)
       const {list, nextReqMessageID} = res
 
       setNextReqID(nextReqMessageID)
@@ -203,9 +203,12 @@ const useMessageList = props => {
       msgWrapper.addEventListener('scroll', onScroll)
       scrollToBottom()
 
-      globalConst.client.on('im-ready', () => getMessageList())
+      const readyEvent = globalConst.client.on('im-ready', () => getMessageList())
 
       return () => {
+
+        globalConst.client.off('im-ready', readyEvent)
+
         if (scrollSubscription) {
           scrollSubscription.unsubscribe()
           scrollSubscription = null
@@ -269,13 +272,14 @@ const useMessageList = props => {
         }
       }
 
-      console.log(foldedMessageList[foldedMessageList.length - 1])
+      // console.log(foldedMessageList[foldedMessageList.length - 1])
       if (lastMessageItem.from === globalConst.client.buid && lastMessageItem !== lastVisibleItem) { // 是自己发的
         shouldBottom = true
       }
     }
     if (shouldBottom) {
       refreshVisibleList()
+      // store.dispatch.message.setNewMessage(false)
       // setVisibleList(messageList.slice)
     }
   }, [foldedMessageList])

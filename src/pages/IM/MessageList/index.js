@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import className from 'classnames/bind'
 import useMessageList from '@/components/IM/Hooks/useMessageList'
 import {filterRole} from 'utils/message'
+import {Button} from 'antd'
 import MsgItem from './MessageItem'
 
 import styles from './index.module.styl'
@@ -16,14 +17,29 @@ const MSGList = props => {
     teacherList
   } = props
   // const [isBottom, setBottom] = useState(false)
-  const [visibleList, msgWrapperRef, hasNew, resolveNewMessage] = useMessageList(props)
+  const [visibleList, msgWrapperRef, hasNew, resolveNewMessage, getMessageList, historyCompleted, historyLoading] = useMessageList(props)
   // const [hasNewMessage, setNewMessage] = useState(false)
+
+  let moreText = '加载更多'
+
+  if(historyLoading) {
+    moreText = '载入中'
+  }
+
+  if(historyCompleted) {
+    moreText = '没有更多了'
+  }  // const [hasNewMessage, setNewMessage] = useState(false)
 
   const teacherMemberList = teacherList
   return (
     <div className={s('msg-wrapper')}>
       <div ref={msgWrapperRef} id={'bsy-msg-container'} className={s('msg-con')}>
         <div className={s('msg-list')}>
+          <Button type='link' block onClick={() => getMessageList(false)} disabled={historyCompleted || historyLoading}>
+            {
+              moreText
+            }
+          </Button>
           {visibleList && visibleList.map(msg => {
 
             const userRole = filterRole(teacherMemberList, msg.from)

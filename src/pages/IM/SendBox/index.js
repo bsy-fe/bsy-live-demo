@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Button} from 'antd'
 import {connect} from 'react-redux'
 import className from 'classnames/bind'
@@ -38,6 +38,17 @@ const SendBox = props => {
   const Mask = isGuestMode && (
     <div onClick={maskClick} className={s('mask')}></div>
   )
+
+  useEffect(() => {
+    const bubbleWrapper = document.querySelector('#bubble-wrapper')
+    // console.log('=============bubbelWrapper::', bubbleWrapper)
+
+    if(isFocus || isHasText) {
+      bubbleWrapper.style.display = 'none'
+    } else {
+      bubbleWrapper.style.display = 'block'
+    }
+  }, [isFocus, isHasText])
 
   return isM ? (
     <div
@@ -142,8 +153,7 @@ const SendBox = props => {
         style={elementStyles[0]}
       />
       <div className={s('send-area')}>
-        <Button
-          type='primary'
+        <button
           className={s(['send-area', textValue ? 'send-area-active' : ''])}
           disabled={inputDisabled}
           onClick={inputSendMessage}
@@ -152,7 +162,7 @@ const SendBox = props => {
             className={s('send-icon')}
             src='https://img.kaikeba.com/01140232400202hgcc.png'
           ></img>
-        </Button>
+        </button>
       </div>
     </div>
   )

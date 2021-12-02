@@ -3,10 +3,10 @@ import React, { useState, useCallback, useRef, useEffect } from 'react'
 
 import getters from '@/store/getters'
 // import { IMCommunicationInstance } from '@/consts/context'
-import IMUtil from '@/utils/IMUtil'
 import { IsPC } from '@/utils'
 import { BSYIM_EMOJI_DISPLAY_CHANGE, BSYIM_MASK_CLICK } from '@/consts'
 import {globalConst} from '@/consts/globalConst'
+import IMUtil from '../../../utils/IMUtil'
 
 
 const useSend = (chatRoomID, addMessage, setFocus) => {
@@ -23,7 +23,7 @@ const useSend = (chatRoomID, addMessage, setFocus) => {
         setSending(true)
         const isM = !IsPC()
         try {
-          let message = await IMUtil.sendMessage(chatRoomID, msg)
+          let message = await IMUtil.sendMessage(chatRoomID, msg, `test customPayloadData in text message at ${new Date().getTime()}`)
           console.log('=============sended message:', JSON.stringify(message))
           message = {
             ...message,

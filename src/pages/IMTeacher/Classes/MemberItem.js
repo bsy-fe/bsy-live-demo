@@ -3,25 +3,26 @@
  * @date 2021-04-15 14:21
  */
 
-import { roleEnum as roleEnumColor } from '@/components/IM/Hooks/useMessageItem'
+import {roleEnum as roleEnumColor} from '@/components/IM/Hooks/useMessageItem'
 import roleEnum from '@/consts/roles'
 import React from 'react'
-import { throttle } from 'lodash'
-import { connect } from 'react-redux'
+import {throttle} from 'lodash'
+import {connect} from 'react-redux'
 
 import classNames from 'classnames/bind'
 import store from '@/store'
-import { inviteStudent } from 'api/mic'
-import { message } from 'antd'
+import {inviteStudent} from 'api/mic'
+import {message} from 'antd'
+import LoadingButton from '@/components/LoadingButton'
 import styles from './index.module.styl'
 
 const s = classNames.bind(styles)
 
-const MemberItem = ({ item, onRefresh, isMicOnline, micSeatList }) => {
+const MemberItem = ({item, onRefresh, isMicOnline, micSeatList}) => {
   const upQueue = throttle(() => {
     console.log('item when invite::', item)
     // console.log('1231323++++++++++++===')
-    inviteStudent(item.uid || item.userID) // 老师的userID代表buid，会有uid表示业务系统的uid，普通学生的userID直接代表业务系统uid，但是没有uid字段
+   return inviteStudent(item.uid || item.userID) // 老师的userID代表buid，会有uid表示业务系统的uid，普通学生的userID直接代表业务系统uid，但是没有uid字段
       .then((res) => {
         if(res && res.code === 1) {
           message.success('操作成功')
@@ -41,8 +42,8 @@ const MemberItem = ({ item, onRefresh, isMicOnline, micSeatList }) => {
         type: 'message/changeUserMute',
         payload: {
           uid,
-          status: !forbid,
-        },
+          status: !forbid
+        }
       })
       .then(() => {
         console.log('改变成功')
@@ -65,7 +66,7 @@ const MemberItem = ({ item, onRefresh, isMicOnline, micSeatList }) => {
             style={{
               backgroundColor:
                 roleEnumColor[item.role] && roleEnumColor[item.role].bg,
-              color: roleEnumColor[item.role] && roleEnumColor[item.role].color,
+              color: roleEnumColor[item.role] && roleEnumColor[item.role].color
             }}
           >
             {roleEnum[item.role]}
@@ -80,10 +81,9 @@ const MemberItem = ({ item, onRefresh, isMicOnline, micSeatList }) => {
               : '禁言'}
           </div>
         )}
-        {canUpQueue && (
-          <div className={s('btn-mic')} onClick={upQueue}>
-            上台
-          </div>
+        {canUpQueue && (<>
+            <LoadingButton className={s('btn-mic')} onClick={upQueue} size='small' type='text'>上台</LoadingButton>
+          </>
         )}
       </div>
     </div>
@@ -92,7 +92,7 @@ const MemberItem = ({ item, onRefresh, isMicOnline, micSeatList }) => {
 
 const mapStateToProps = (state) => {
   return {
-    micSeatList: state.mic.micSeatList,
+    micSeatList: state.mic.micSeatList
   }
 }
 

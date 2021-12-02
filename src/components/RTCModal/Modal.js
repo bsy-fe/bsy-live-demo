@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import classNames from 'classnames/bind'
 import s from  './index.module.styl'
 
@@ -12,6 +12,41 @@ const RTCModal = ({
   onYes,
   onNo
 }) => {
+
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+
+  } , [onYes, onNo])
+
+
+  const innerOnYes = (e) => {
+    setLoading(true)
+    const res = onYes(e)
+
+    if(res.then) {
+      res.finally(() => {
+        setLoading(false)
+      })
+    } else {
+      setTimeout(() => setLoading(false), 1000)
+    }
+  }
+
+  const innerOnNo = (e) => {
+    setLoading(true)
+
+    const res = onNo(e)
+
+    if(res.then) {
+      res.finally(() => {
+        setLoading(false)
+      })
+    } else {
+      setTimeout(() => setLoading(false), 1000)
+    }
+  }
+
   return (
     <div className={cx('rtc-mask')}>
       <div className={cx('rtc-confirm-container')}>
@@ -25,13 +60,15 @@ const RTCModal = ({
         </div>
         <div className={cx('rtc-footer')}>
           <button 
-            onClick={onNo}
+            onClick={innerOnNo}
+            disabled={loading}
             className={cx('rtc-btn-cancel')}
           >
             {cancelText}
           </button>
-          <button 
-            onClick={onYes}
+          <button
+            disabled={loading}
+            onClick={innerOnYes}
             className={cx('rtc-btn-ok')}
           >
             {okText}

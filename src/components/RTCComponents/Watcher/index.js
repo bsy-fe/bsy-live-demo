@@ -75,6 +75,11 @@ const Watcher = (props) => {
             }`)}
           />
         </div>
+        <div id={`muted-${item.buid}`} className={cx('cancel-muted')}>
+          <div className={cx('muted-icon-wall')}>
+            <img className={cx('muted-icon')} src="https://res-qn.baoshiyun.com/a/64344190801202oajd.png?imageView2/0/interlace/1/q/90|imageslim" />
+          </div>
+        </div>
       </div>
     </div>
   )

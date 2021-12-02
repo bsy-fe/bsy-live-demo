@@ -5,7 +5,7 @@ import TerserPlugin from 'terser-webpack-plugin'
 import 'colors'
 import dotenv from 'dotenv'
 import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent'
-import { PORT, BUILD_DIR, NAME_SPACE, SDK_EXE, THIRD_PARTY } from './constants'
+import {BUILD_DIR, NAME_SPACE, PORT, SDK_EXE, THIRD_PARTY} from './constants'
 // import { resolvePath as resolve } from './path'
 
 const path = require('path')
@@ -44,11 +44,14 @@ const getCssLoader = () => {
 const cssLoader = getCssLoader()
 
 const entry = {}
-entry[
-  `${NAME_SPACE.toLowerCase()}${isPrd && prdVersion ? `-${prdVersion}` : ''}`
-] = './src/index.js'
+if (isPrd && prdVersion) {
+  entry[
+    `${NAME_SPACE.toLowerCase()}${isPrd && prdVersion ? `-${prdVersion}` : ''}`
+    ] = './src/index.js'
+} else {
+  entry[`${NAME_SPACE.toLowerCase()}`] = './src/index.js'
+}
 
-entry[`${NAME_SPACE.toLowerCase()}`] = './src/index.js'
 
 if (!isDev) {
   // entry[`${NAME_SPACE.toLowerCase()}-latest`] = './src/index.js'
@@ -127,7 +130,7 @@ const options = {
         test: /\.less$/,
         exclude: /\.module\.less$/,
         use: ['style-loader', cssLoader, 'postcss-loader', {
-          loader: 'less-loader', 
+          loader: 'less-loader',
           options: {
             lessOptions: {
               javascriptEnabled: true
@@ -223,11 +226,11 @@ const options = {
         {
           from: './public/',
           to: BUILD_DIR,
-          filter: (fileName) =>{
+          filter: (fileName) => {
             return /.md$/.test(fileName)
           }
         }
-        ]
+      ]
     })
   ]
 }

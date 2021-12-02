@@ -6,6 +6,7 @@ import NoDataTemplate from '@/components/IM/NoDataTemplate'
 import { message } from 'antd'
 import { BSYIM_TAB_GROUP_ACTIVITY } from '@/consts'
 
+import {ActivityEventEmitter} from '@/consts/subjects'
 import styles from './index.module.styl'
 import ItemList from './itemList'
 
@@ -38,6 +39,13 @@ const Activity = props => {
   }
   useEffect(() => {
     refresh()
+    const subscription = ActivityEventEmitter.subscribe(() => {
+      refresh()
+    })
+
+    return () => {
+      subscription && subscription.unsubscribe()
+    }
   }, [])
   useEffect(() => {
     if (String(activeKey) === BSYIM_TAB_GROUP_ACTIVITY) {

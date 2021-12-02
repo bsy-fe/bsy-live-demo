@@ -65,21 +65,37 @@ const RTCModeStore = {
       }
     }
   },
-  playStream(data, config, instance) {
-    let isSelf = data.uid === config.userId
+  async playStream(data, config, instance) {
+    // let isSelf = data.uid === config.userId
     let self = this.currentSeatList.find(i => i.buid === data.uid)
     console.log(self)
-    let isSuccess = instance.interactLive.rtc.playStream(
-      data.uid,
-      `rtc-${data.uid}`,
-      { fit: 'cover', muted: !!self.isSelf }
-    )
-    if (isSuccess) {
+    try {
+      await instance.interactLive.rtc.playStream(
+        data.uid,
+        `rtc-${data.uid}`,
+        { fit: 'cover', muted: !!self.isSelf }
+      )
       this._setSelfInitVideoAudioStatus(self, instance)
       // 视频镜像问题
       let video = document.querySelector(`#rtc-${data.uid}`).querySelector('video')
       video && (video.style.transform = '')
-    }
+    } catch (error) {
+      console.log('=====autoplay',error )
+      // 返回0 则说明自动播放失败
+      if (error.code === 0) {
+        let dom = document.querySelector(`#muted-${data.uid}`)
+        dom.style.display = 'block'
+        // 取消静音限制
+        dom.onclick = () => {
+          console.log('=====autoplay', )
+          instance.interactLive.rtc.stopStream(data.uid)
+          dom.style.display = 'none'
+          let playDom = document.querySelector(`#rtc-${data.uid}`)
+          playDom && (playDom.innerHTML = '')
+          this.playStream(data, config, instance)
+        }
+      }
+   }    
   },
   // 更新当前正在直播
   updateLivingQueue(type, id){

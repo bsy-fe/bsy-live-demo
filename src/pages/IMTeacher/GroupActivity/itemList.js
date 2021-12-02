@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import classNames from 'classnames/bind'
 import { Button, message } from 'antd'
 import { changeAdminActivity } from '@/api/activity'
@@ -7,10 +7,12 @@ import styles from './index.module.styl'
 
 const isM = !IsPC()
 
-let isSending = false
+// let isSending = false
 const s = classNames.bind(styles)
 const ItemList = props => {
   const { refresh, currentRow, isLesson } = props
+
+  const [isSending, setIsSending] = useState(null)
   // 教师发起活动
   const handlePause = (item, status) => {
     let params = {
@@ -20,7 +22,7 @@ const ItemList = props => {
     if(isSending) {
       return
     }
-    isSending = true
+    setIsSending(params.activity_id)
     changeAdminActivity(params.activity_id, status)
       .then(() => {
         if (String(status) === '0') {
@@ -29,10 +31,10 @@ const ItemList = props => {
           message.success('启用成功', 1)
         }
         refresh()
-        isSending = false
+        setIsSending(null)
       })
       .catch(res => {
-        isSending = false
+        setIsSending(null)
         message.error(res.data.msg, 1)
       })
   }
@@ -48,13 +50,11 @@ const ItemList = props => {
           <p>
             <b>{currentRow.name}</b>
           </p>
-          <p>状态：{currentRow.status === 1 ? '已发送' : '未发送'}</p>
+           <p>发送次数：{currentRow.send_num}</p>
           <div className={s('btn-container')}>
-            {currentRow.status === 1 ? '' : (
-              <Button type='primary' disabled={!!isLesson} onClick={() => handlePause(currentRow, 1)}>
-                启用
+              <Button type='primary' disabled={!!isLesson} onClick={() => handlePause(currentRow, 1)} loading={isSending === currentRow.activity_id}>
+                发送
               </Button>
-            )}
           </div>
         </li>
       </ul>

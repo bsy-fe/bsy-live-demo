@@ -24,7 +24,7 @@ let addZanEvent = null
 
 const Like = props => {
   // const rpDialog = AskDialog(props)
-  const { likeNum } = props
+  const { likeNum, role } = props
 
   const [visibleLikeNum, setVisibleLikeNum] = useState(0)
 
@@ -53,10 +53,12 @@ const Like = props => {
 
 
   const addZan = (number, event) => {
-    if (!addZanEvent) {
-      addZanEvent = PraiseBubble(bubbleWrapper.current, event)
+    if(role === 4) {
+      if (!addZanEvent) {
+        addZanEvent = PraiseBubble(bubbleWrapper.current, event)
+      }
+      addZanEvent && addZanEvent(number)
     }
-    addZanEvent && addZanEvent(number)
   }
 
 
@@ -111,6 +113,7 @@ const Like = props => {
 
     return () => {
       window.removeEventListener('resize', listener)
+      // document.body.removeChild(ele)
     }
   }, [])
   
@@ -133,7 +136,8 @@ const Like = props => {
 }
 
 const mapStateToProps = state => ({
-  likeNum: state.message.likeNumber
+  likeNum: state.message.likeNumber,
+  role: state.user.role
 })
 const mapDispatchToProps = dispatch => ({
   setLikeNum: dispatch.message.setLikeNum

@@ -11,6 +11,9 @@ import { BSYIM_INITIAL_MODE } from '@/consts'
 import IMTeacher from '@/pages/IMTeacher'
 import IM from '@/pages/IM'
 import store from '@/store'
+import IMUtil from '@/utils/IMUtil'
+import {Button, message} from 'antd'
+import {HTTP_STATUS} from '../../consts/statusCode'
 
 const isPc = IsPC()
 
@@ -108,6 +111,7 @@ export default (props) => {
       // 清空事件监听
     }
   }, [client])
+
 
   return (
     <GlobalContext.Consumer>

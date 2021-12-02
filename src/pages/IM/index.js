@@ -26,7 +26,25 @@ const s = classNames.bind(styles)
 class IM extends InitialEntry {
 
   state = {
-    tabPaneList: defaultTabList
+    tabPaneList: defaultTabList,
+    imModeStyle: {}
+  }
+
+  rerender = () => {
+    const { initialMode, config } = this.props
+    let style = {
+      backgroundColor: isM ? 'transparent' : null
+    }
+    // console.log('active', initialMode)
+    if (initialMode === BSYIM_INITIAL_MODE.imMode) {
+      let height = getRtcImHeight(config.container)
+
+      style.height = height
+    }
+    // console.log('active', style)
+    this.setState({
+      imModeStyle: style
+    })
   }
 
   constructor(props) {
@@ -37,10 +55,20 @@ class IM extends InitialEntry {
         tabPaneList: list
       })
     })
+
+    window.addEventListener('resize', this.rerender)
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.initialMode !== this.props.initialMode || prevProps.config.container !== this.props.config.container) {
+      this.rerender()
+    }
   }
 
   componentWillUnmount() {
     this.tabListChange.unsubscribe()
+    window.removeEventListener('resize', this.rerender)
+
   }
 
 
@@ -48,24 +76,16 @@ class IM extends InitialEntry {
 
   render() {
     const { TabPane } = Tabs
-    const { tabPaneList, defaultActiveKey, activeKey } = this.state
+    const { tabPaneList, defaultActiveKey, activeKey, imModeStyle } = this.state
     const { initialMode, config } = this.props
-    let style = {
-      backgroundColor: isM ? 'transparent' : null
-    }
-    console.log('active', initialMode)
-    if (initialMode === BSYIM_INITIAL_MODE.imMode) {
-      let height = getRtcImHeight(config.container)
-      style.height = height
-    }  
-    console.log('active', style)
+
     return (
       <div
         className={
           s('student-chat-container', isM ? 'm-chart-container' : '', initialMode === BSYIM_INITIAL_MODE.imMode ? 'm-im-mode-container' : '')
         }
         style={{
-          ...style
+          ...imModeStyle
         }}
       >
           <>

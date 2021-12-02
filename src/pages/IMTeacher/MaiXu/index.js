@@ -1,36 +1,31 @@
 /**
  *@file
  */
-import React, { useState, useEffect } from 'react'
-import { Button, Pagination, message } from 'antd'
+import React, {useEffect, useState} from 'react'
+import {message, Pagination} from 'antd'
 import store from '@/store'
 import className from 'classnames/bind'
-import { connect } from 'react-redux'
-import {Subject} from 'rxjs'
+import {connect} from 'react-redux'
+import {Subject, timer} from 'rxjs'
 import roleEnum from '@/consts/roles'
 import getters from '@/store/getters'
 
-import {
-  getQueueList,
-  studentOnSeatFromQueue,
-  removeStudentFromQueue,
-  studentOffSeat
-} from 'api/mic'
-import { BSYIM_TAB_WAITING } from '@/consts'
-import { roleEnum as roleEnumColor } from '@/components/IM/Hooks/useMessageItem'
-import { globalConst } from '@/consts/globalConst'
-import {debounceTime, tap, throttleTime} from 'rxjs/operators'
+import {getQueueList, removeStudentFromQueue, studentOffSeat, studentOnSeatFromQueue} from 'api/mic'
+import {BSYIM_TAB_WAITING} from '@/consts'
+import {roleEnum as roleEnumColor} from '@/components/IM/Hooks/useMessageItem'
+import {globalConst} from '@/consts/globalConst'
+import {debounceTime, tap} from 'rxjs/operators'
+import LoadingButton from '@/components/LoadingButton'
 import Setting from './setting'
 
 import styles from './index.module.styl'
-import {HTTP_STATUS} from "../../../consts/statusCode";
 
 const s = className.bind(styles)
 
 const getListSubject = new Subject()
 
 const Maixu = (props) => {
-  const { activeKey, getMicSeatList, teacherList, rtcInfo } = props
+  const {activeKey, getMicSeatList, teacherList, rtcInfo} = props
   const defaultPagination = {
     total: 0,
     current: 1,
@@ -56,12 +51,12 @@ const Maixu = (props) => {
   const handleMic = (item) => {
     console.log('============上台::', item)
     if (item.isOpenMic) {
-      studentOffSeat(item.uid)
+       studentOffSeat(item.uid)
         .then((res) => {
           if(res && res.code === 1) {
             message.success('操作成功')
           } else {
-            message.warning(res.msg)
+            res.msg && message.warning(res.msg)
           }
         })
         .catch((res) => {
@@ -73,13 +68,16 @@ const Maixu = (props) => {
           if(res && res.code === 1) {
             message.success('操作成功')
           } else {
-            message.warning(res.msg)
+            res.msg && message.warning(res.msg)
           }
         })
         .catch((res) => {
           message.warning(res.data.msg)
         })
     }
+
+
+    return timer(5000).toPromise()
   }
 
   const NoDataTemplate = () => {
@@ -205,7 +203,7 @@ const Maixu = (props) => {
           <div className={s('table-list')}>
             {list.map((item, index) => {
               return (
-                <div className={s('table-item')} key={item.uid + index}>
+                <div className={s('table-item')} key={item.uid + index + item.isOpenMic}>
                   <div className={s('left')}>
                     <div className={s('name')}>{item.nickname}</div>
                     {item.role !== 'Member' && (
@@ -239,9 +237,9 @@ const Maixu = (props) => {
                         item.isOpenMic ? s('hands-down') : ''
                       }`}
                     >
-                      <Button onClick={() => handleMic(item)}>
+                      <LoadingButton onClick={() => handleMic(item)}>
                         {item.isOpenMic ? '下台' : '上台'}
-                      </Button>
+                      </LoadingButton>
                     </div>
                   </div>
                 </div>

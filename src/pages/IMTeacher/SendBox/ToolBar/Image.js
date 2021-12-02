@@ -26,13 +26,15 @@ const Image = props => {
   const uploadImage = e => {
     const {files} = e.target
     console.log('files to upload', files)
-    IMUtil.sendCustomImage(files).then( msgs => {
+    IMUtil.sendCustomImage(files, 'test custom payload data in image message').then( msgs => {
       msgs.forEach(msg => {
         console.log('image', msg)
         // store.dispatch.message.addMessage({
         //   message: msg,
         //   selfSend: 1
         // })
+      }, reject => {
+
       })
 
       const msgContainer = document.querySelector('#bsy-msg-container')

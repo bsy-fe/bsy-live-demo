@@ -37,12 +37,6 @@ export const defaultTeacherTabList = [
     key: BSYIM_TAB_ASK,
     icon: '//img.kaikeba.com/55134112400202nryc.png',
     iframeUrl: ''
-  }
-/*  {
-    label: '活动',
-    key: BSYIM_TAB_ACTIVITY,
-    icon: '//img.kaikeba.com/55134112400202lpbs.png',
-    iframeUrl: ''
   },
   {
     label: '群发红包',
@@ -50,7 +44,14 @@ export const defaultTeacherTabList = [
     icon: 'https://img.kaikeba.com/02940240101202topz.png',
     iframeUrl: '',
     isRole: true
+  }
+/*  {
+    label: '活动',
+    key: BSYIM_TAB_ACTIVITY,
+    icon: '//img.kaikeba.com/55134112400202lpbs.png',
+    iframeUrl: ''
   },
+
   {
     label: '直播货架',
     key: BSYIM_TAB_LIVEGOODS,

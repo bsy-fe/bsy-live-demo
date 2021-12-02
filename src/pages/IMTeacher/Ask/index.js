@@ -51,7 +51,7 @@ const TeacherAsk = props => {
         }
       })
       .catch(error => {
-        message.error(error.data.msg, 1)
+        message.error(error.data ? error.data.msg : error, 1)
         setList([])
       })
   }
@@ -74,9 +74,15 @@ const TeacherAsk = props => {
   }, [activeKey])
   return (
     <div className={s('ask-container')}>
-      <p style={{paddingBottom: '20px', lineHeight: 1.7}}>
-        截止到当前已发送的题目，共{totalNum}人参与答题,有{allRightNum}人全部答对
-      </p>
+      <div className={s('total-wrapper')}>
+        <div style={{marginBottom: 2}}>
+          当前参与答题人数统计：
+        </div>
+        <div>
+          <span style={{marginRight: 24}}> 参与：{totalNum} </span>
+          <span>答对：{allRightNum}</span>
+        </div>
+      </div>
       {list.length ? (
         list.map(item => {
           return (
